@@ -168,7 +168,7 @@ function organizarTreino(){
   const itens=[];
   let treino='Treino';
 
-  const ignorar=/volume semanal|volume total|total geral|total:|frequência|frequencia|duração|duracao|pontos importantes|informações importantes|informacoes importantes|hipertrofia|foco|disciplina|resultado|descanso adequado|progressão|progressao|treino original|grupo muscular|menos séries|mais séries/i;
+  const ignorar=/volume semanal|volume por grupo|volume total|total geral|total semanal|total:|frequência|frequencia|duração|duracao|pontos importantes|informações importantes|informacoes importantes|hipertrofia|foco|disciplina|resultado|descanso adequado|descanso adequado|progressão|progressao|treino original|grupo muscular|menos séries|mais séries|exercício|exercicio|séries|series|back-off|backoff|por semana|minutos por treino|busque progressão|mantém os mesmos|mantem os mesmos|diferença no volume|diferenca no volume/i;
 
   linhas.forEach(linha=>{
     let limpa=linha.replace(/[|]/g,' ').trim();
