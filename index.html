@@ -69,7 +69,13 @@ small{color:#aaa}
 <input id="repsCarga" type="number" placeholder="Repetições realizadas">
 
 <button onclick="salvarCarga()">Salvar registro</button>
+<h3>📈 Evolução das cargas</h3>
 
+<select id="filtroGrafico" onchange="mostrarGraficoCargas()">
+  <option value="">Selecione um exercício</option>
+</select>
+
+<div id="graficoCargas"></div>
 <div id="historicoCargas"></div>
 </div>
 <div class="card">
@@ -444,6 +450,8 @@ function salvarCarga(){
   document.getElementById('repsCarga').value = '';
 
   mostrarCargas();
+atualizarFiltroGrafico();
+mostrarGraficoCargas();
   alert('Registro salvo com sucesso!');
 }
 
@@ -474,6 +482,67 @@ function mostrarCargas(){
 }
 
 mostrarCargas();
+function atualizarFiltroGrafico(){
+  const lista = JSON.parse(localStorage.getItem('basefit-cargas') || '[]');
+  const filtro = document.getElementById('filtroGrafico');
+  if(!filtro) return;
+
+  const atual = filtro.value;
+  const exercicios = [...new Set(lista.map(r => r.exercicio))];
+
+  filtro.innerHTML = '<option value="">Selecione um exercício</option>';
+
+  exercicios.forEach(nome => {
+    const opcao = document.createElement('option');
+    opcao.value = nome;
+    opcao.textContent = nome;
+    filtro.appendChild(opcao);
+  });
+
+  filtro.value = exercicios.includes(atual) ? atual : '';
+}
+
+function mostrarGraficoCargas(){
+  const lista = JSON.parse(localStorage.getItem('basefit-cargas') || '[]');
+  const filtro = document.getElementById('filtroGrafico');
+  const area = document.getElementById('graficoCargas');
+
+  if(!filtro || !area) return;
+
+  const registros = lista.filter(r => r.exercicio === filtro.value);
+
+  if(!registros.length){
+    area.innerHTML = '<p>Selecione um exercício para ver sua evolução.</p>';
+    return;
+  }
+
+  const largura = 320;
+  const altura = 190;
+  const max = Math.max(...registros.map(r => r.peso), 1);
+  const pontos = registros.map((r,i) => {
+    const x = registros.length === 1 ? largura/2 : 20 + i * 280/(registros.length-1);
+    const y = 150 - (r.peso/max)*120;
+    return {x,y,r};
+  });
+
+  const linhas = pontos.map(p => p.x + ',' + p.y).join(' ');
+
+  area.innerHTML = `
+    <p><b>${registros[0].exercicio}</b></p>
+    <svg viewBox="0 0 320 190" width="100%" role="img">
+      <polyline points="${linhas}" fill="none" stroke="#b7ff00" stroke-width="3"/>
+      ${pontos.map(p => `
+        <circle cx="${p.x}" cy="${p.y}" r="5" fill="#b7ff00"/>
+        <text x="${p.x}" y="${p.y-10}" fill="white" font-size="11" text-anchor="middle">${p.r.peso}kg</text>
+      `).join('')}
+    </svg>
+    <p>Primeiro registro: ${registros[0].peso} kg</p>
+    <p>Último registro: ${registros[registros.length-1].peso} kg</p>
+  `;
+}
+
+atualizarFiltroGrafico();
+mostrarGraficoCargas();
 </script>
 </body>
 </html>
