@@ -154,6 +154,53 @@ async function lerFoto(){
   }
 }
 
+function organizarTreino(){
+  const texto=document.getElementById('transcricao').value.trim();
+  const area=document.getElementById('treinoOrganizado');
+
+  if(!texto){
+    alert('Primeiro transcreva uma foto.');
+    return;
+  }
+
+  const linhas=texto.split('\n')
+    .map(l=>l.trim())
+    .filter(l=>l.length>2);
+
+  area.innerHTML='<h3>📋 Revisar transcrição</h3>';
+
+  linhas.forEach((linha,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+
+    const titulo=document.createElement('label');
+    titulo.textContent='Item '+(i+1);
+
+    const campo=document.createElement('input');
+    campo.type='text';
+    campo.className='itemTreino';
+    campo.value=linha;
+    campo.style.width='100%';
+
+    card.appendChild(titulo);
+    card.appendChild(campo);
+    area.appendChild(card);
+  });
+
+  const botao=document.createElement('button');
+  botao.textContent='Atualizar transcrição';
+  botao.onclick=function(){
+    const itens=[...document.querySelectorAll('.itemTreino')]
+      .map(c=>c.value.trim())
+      .filter(Boolean);
+
+    document.getElementById('transcricao').value=itens.join('\n');
+    alert('Transcrição atualizada!');
+  };
+
+  area.appendChild(botao);
+}
+
 function salvarTreino(){
 const nome=document.getElementById('nomeTreino').value.trim();
 const texto=document.getElementById('transcricao').value.trim();
