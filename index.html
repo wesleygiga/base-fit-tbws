@@ -1,34 +1,26 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BASE FIT TBWS</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
-:root { --cor:#b7ff00; }
-* { box-sizing:border-box; }
-body {
-  margin:0; padding:20px;
-  background:#080808; color:white;
-  font-family:Arial,sans-serif;
-}
-header { padding:20px 0; }
-h1 { font-size:30px; }
-h1 span { color:var(--cor); }
-p { color:#aaa; }
-.card {
-  background:#191919; border:1px solid #333;
-  border-radius:15px; padding:18px;
-  margin:15px 0;
-}
-button,select {
-  background:var(--cor); color:#080808;
-  border:0; border-radius:8px;
-  padding:12px; font-weight:bold;
-  margin:4px;
-}
-#timer { font-size:36px; margin:15px 0; }
+:root{--cor:#b7ff00}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#080808;color:white;font-family:Arial}
+header{padding:15px 0}
+h1 span{color:var(--cor)}
+p{color:#aaa}
+.card{background:#191919;border:1px solid #333;border-radius:15px;padding:18px;margin:15px 0}
+button,select,.upload{background:var(--cor);color:#080808;border:0;border-radius:8px;padding:12px;font-weight:bold;margin:5px;display:inline-block}
+input,textarea{width:100%;padding:12px;margin:8px 0;background:#292929;color:white;border:1px solid #555;border-radius:8px}
+textarea{min-height:180px}
+#preview{width:100%;max-height:300px;object-fit:contain;display:none;margin-top:12px}
+#timer{font-size:36px;margin:15px 0}
+small{color:#aaa}
 </style>
 </head>
 <body>
@@ -40,7 +32,7 @@ button,select {
 <div class="card">
 <h2>Bem-vindo!</h2>
 <p>Sua evolução começa aqui.</p>
-<label>Personalizar interface:</label><br>
+<label>Personalizar interface:</label>
 <select id="sexo" onchange="tema()">
 <option value="masculino">Masculino</option>
 <option value="feminino">Feminino</option>
@@ -48,12 +40,21 @@ button,select {
 </div>
 
 <div class="card">
-<h2>Treinos</h2>
-<p>Organize seus exercícios e acompanhe seu progresso.</p>
+<h2>🏋️ Meus Treinos</h2>
+<p>Cadastre sua ficha usando uma imagem.</p>
+<label class="upload" for="foto">📷 Escolher foto do treino</label>
+<input id="foto" type="file" accept="image/*" capture="environment" hidden onchange="mostrarFoto(event)">
+<img id="preview">
+<button onclick="lerFoto()">Transcrever treino</button>
+<p id="status">Aguardando imagem.</p>
+<textarea id="transcricao" placeholder="A transcrição aparecerá aqui. Você poderá corrigir os exercícios, séries e repetições."></textarea>
+<input id="nomeTreino" placeholder="Nome do treino (ex.: Treino A)">
+<button onclick="salvarTreino()">Salvar treino</button>
+<div id="treinosSalvos"></div>
 </div>
 
 <div class="card">
-<h2>Cronômetro</h2>
+<h2>⏱ Cronômetro</h2>
 <div id="timer">00:00</div>
 <button onclick="iniciar()">Iniciar</button>
 <button onclick="pausar()">Pausar</button>
@@ -65,19 +66,78 @@ button,select {
 <div class="card"><h2>Motivacional</h2><p>Disciplina e superação todos os dias.</p></div>
 
 <script>
-let segundos=0, intervalo=null;
+let segundos=0,intervalo=null,imagem=null;
+
+function mostrarFoto(event){
+const arquivo=event.target.files[0];
+if(!arquivo)return;
+imagem=arquivo;
+const leitor=new FileReader();
+leitor.onload=e=>{
+document.getElementById('preview').src=e.target.result;
+document.getElementById('preview').style.display='block';
+};
+leitor.readAsDataURL(arquivo);
+document.getElementById('status').textContent='Imagem carregada. Pronta para leitura.';
+}
+
+async function lerFoto(){
+if(!imagem){alert('Escolha uma foto primeiro.');return;}
+const status=document.getElementById('status');
+status.textContent='Lendo a imagem... aguarde.';
+try{
+const resultado=await Tesseract.recognize(imagem,'por',{
+logger:m=>{
+if(m.status==='recognizing text'){
+status.textContent='Reconhecendo: '+Math.round(m.progress*100)+'%';
+}
+}
+});
+document.getElementById('transcricao').value=resultado.data.text;
+status.textContent='Leitura concluída! Confira e corrija os dados.';
+}catch(e){
+status.textContent='Não foi possível ler. Tente outra imagem.';
+}
+}
+
+function salvarTreino(){
+const nome=document.getElementById('nomeTreino').value.trim();
+const texto=document.getElementById('transcricao').value.trim();
+if(!nome||!texto){alert('Informe o nome e a transcrição.');return;}
+let lista=JSON.parse(localStorage.getItem('basefit-treinos')||'[]');
+lista.push({nome,texto,data:new Date().toLocaleDateString('pt-BR')});
+localStorage.setItem('basefit-treinos',JSON.stringify(lista));
+document.getElementById('nomeTreino').value='';
+document.getElementById('transcricao').value='';
+mostrarTreinos();
+alert('Treino salvo!');
+}
+
+function mostrarTreinos(){
+const lista=JSON.parse(localStorage.getItem('basefit-treinos')||'[]');
+document.getElementById('treinosSalvos').innerHTML=
+'<h3>Treinos salvos</h3>'+
+lista.map((t,i)=>`<div class="card"><b>${t.nome}</b><small> • ${t.data}</small><p style="white-space:pre-wrap">${t.texto.replace(/</g,'&lt;')}</p><button onclick="excluirTreino(${i})">Excluir</button></div>`).join('');
+}
+
+function excluirTreino(i){
+let lista=JSON.parse(localStorage.getItem('basefit-treinos')||'[]');
+lista.splice(i,1);
+localStorage.setItem('basefit-treinos',JSON.stringify(lista));
+mostrarTreinos();
+}
+
 function atualizar(){
 let m=String(Math.floor(segundos/60)).padStart(2,'0');
 let s=String(segundos%60).padStart(2,'0');
 document.getElementById('timer').textContent=m+':'+s;
 }
 function iniciar(){
-if(!intervalo) intervalo=setInterval(()=>{
-segundos++; atualizar();
-},1000);
+if(!intervalo)intervalo=setInterval(()=>{segundos++;atualizar();},1000);
 }
 function pausar(){clearInterval(intervalo);intervalo=null;}
 function zerar(){pausar();segundos=0;atualizar();}
+
 function tema(){
 let f=document.getElementById('sexo').value==='feminino';
 document.documentElement.style.setProperty('--cor',f?'#ff69b4':'#b7ff00');
@@ -85,6 +145,7 @@ localStorage.setItem('basefit-sexo',f?'feminino':'masculino');
 }
 let salvo=localStorage.getItem('basefit-sexo');
 if(salvo){document.getElementById('sexo').value=salvo;tema();}
+mostrarTreinos();
 </script>
 </body>
 </html>
