@@ -83,23 +83,71 @@ leitor.readAsDataURL(arquivo);
 document.getElementById('status').textContent='Imagem carregada. Pronta para leitura.';
 }
 
+
 async function lerFoto(){
-if(!imagem){alert('Escolha uma foto primeiro.');return;}
-const status=document.getElementById('status');
-status.textContent='Lendo a imagem... aguarde.';
-try{
-const resultado=await Tesseract.recognize(imagem,'por',{
-logger:m=>{
-if(m.status==='recognizing text'){
-status.textContent='Reconhecendo: '+Math.round(m.progress*100)+'%';
-}
-}
-});
-document.getElementById('transcricao').value=resultado.data.text;
-status.textContent='Leitura concluída! Confira e corrija os dados.';
-}catch(e){
-status.textContent='Não foi possível ler. Tente outra imagem.';
-}
+  if(!imagem){
+    alert('Escolha uma foto primeiro.');
+    return;
+  }
+
+  const status=document.getElementById('status');
+  status.textContent='Preparando a leitura...';
+
+  let foto;
+
+  try{
+    foto=await createImageBitmap(imagem);
+
+    const nomes=['TREINO I','TREINO II','TREINO III'];
+    const largura=Math.floor(foto.width/3);
+    let textos=[];
+
+    for(let i=0;i<3;i++){
+      status.textContent='Lendo '+nomes[i]+'...';
+
+      const inicio=i*largura;
+      const parte=(i===2)?foto.width-inicio:largura;
+
+      const canvas=document.createElement('canvas');
+      canvas.width=parte;
+      canvas.height=foto.height;
+
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(
+        foto,
+        inicio,0,parte,foto.height,
+        0,0,parte,foto.height
+      );
+
+      const resultado=await Tesseract.recognize(
+        canvas,
+        'por',
+        {
+          logger:m=>{
+            if(m.status==='recognizing text'){
+              status.textContent=
+                'Lendo '+nomes[i]+': '+
+                Math.round(m.progress*100)+'%';
+            }
+          }
+        }
+      );
+
+      textos.push(
+        nomes[i]+'\n'+resultado.data.text.trim()
+      );
+    }
+
+    document.getElementById('transcricao').value=
+      textos.join('\n\n--------------------\n\n');
+
+    status.textContent='Leitura concluída! Confira os três treinos.';
+
+  }catch(e){
+    status.textContent='Erro na leitura. Tente outra imagem.';
+  }finally{
+    if(foto) foto.close();
+  }
 }
 
 function salvarTreino(){
