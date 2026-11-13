@@ -47,7 +47,7 @@ small{color:#aaa}
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   overflow: hidden;
   padding: 20px;
 }
@@ -64,7 +64,9 @@ small{color:#aaa}
 #semFoto {
   position: relative;
   z-index: 4;
+  width: 100%;
   text-align: center;
+  margin-top: 20px;
   color: white;
   text-shadow: 0 2px 8px black;
 }
@@ -89,12 +91,13 @@ small{color:#aaa}
 }
 .atalhos {
   position: relative;
-  z-index: 3;
+  z-index: 5;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   width: 100%;
-  margin-top: 20px;
+  margin-top: auto;
+  padding-bottom: 25px;
 }
 
 .atalhos button {
@@ -116,7 +119,7 @@ small{color:#aaa}
 <div class="card" id="telaInicial">
 
   <div class="foto-perfil">
-    <img id="fotoPerfil" 
+    <img id="fotoPerfil" style="display:none;">
 
 <div id="semFoto">
   <h2>BASE FIT TBWS</h2>
