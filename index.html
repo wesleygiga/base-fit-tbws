@@ -101,7 +101,14 @@ small{color:#aaa}
       📷 Escolher foto
     </button>
   </div>
-
+<div class="atalhos">
+  <button onclick="irPara('meusTreinos')">🏋️ Meus Treinos</button>
+  <button onclick="irPara('registroCargas')">📈 Cargas</button>
+  <button onclick="irPara('cronometro')">⏱ Cronômetro</button>
+  <button onclick="irPara('dieta')">🥗 Dieta</button>
+  <button onclick="irPara('meuCorpo')">📊 Meu Corpo</button>
+  <button onclick="irPara('motivacional')">🔥 Motivacional</button>
+</div>
   <h2>Bem-vindo!</h2>
   <p>Sua evolução começa aqui.</p>
 
@@ -113,7 +120,7 @@ small{color:#aaa}
 
 </div>
 
-<div class="card">
+<div class="card" id="meusTreinos">
 <h2>🏋️ Meus Treinos</h2>
 <p>Cadastre sua ficha usando uma imagem.</p>
 <button type="button" onclick="document.getElementById('fotoGaleria').click()">🖼️ Escolher da galeria</button>
@@ -132,7 +139,7 @@ small{color:#aaa}
 <button onclick="salvarTreino()">Salvar treino</button>
 <div id="treinosSalvos"></div>
 </div>
-<div class="card">
+<div class="card" id="registroCargas">
 <h2>🏋️ Registro de Cargas</h2>
 <p>Registre seu desempenho nos exercícios.</p>
 
@@ -152,7 +159,7 @@ small{color:#aaa}
 <div id="graficoCargas"></div>
 <div id="historicoCargas"></div>
 </div>
-<div class="card">
+<div class="card" id="cronometro">
 <h2>⏱ Cronômetro</h2>
 <div id="timer">00:00</div>
 <button onclick="iniciar()">Iniciar</button>
@@ -160,9 +167,9 @@ small{color:#aaa}
 <button onclick="zerar()">Zerar</button>
 </div>
 
-<div class="card"><h2>Dieta</h2><p>Controle sua alimentação.</p></div>
-<div class="card"><h2>Meu Corpo</h2><p>Acompanhe suas medidas e evolução.</p></div>
-<div class="card"><h2>Motivacional</h2><p>Disciplina e superação todos os dias.</p></div>
+<div class="card" id="dieta"><h2>Dieta</h2><p>Controle sua alimentação.</p></div>
+<div class="card" id="meuCorpo"><h2>Meu Corpo</h2><p>Acompanhe suas medidas e evolução.</p></div>
+<div class="card" id="motivacional"><h2>Motivacional</h2><p>Disciplina e superação todos os dias.</p></div>
 
 <script>
 let segundos=0,intervalo=null,imagem=null;
@@ -667,6 +674,16 @@ function carregarFotoPerfil(){
 }
 
 carregarFotoPerfil();
+function irPara(id){
+  const destino = document.getElementById(id);
+
+  if(destino){
+    destino.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
+}
 </script>
 </body>
 </html>
