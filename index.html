@@ -58,7 +58,20 @@ small{color:#aaa}
 <button onclick="salvarTreino()">Salvar treino</button>
 <div id="treinosSalvos"></div>
 </div>
+<div class="card">
+<h2>🏋️ Registro de Cargas</h2>
+<p>Registre seu desempenho nos exercícios.</p>
 
+<input id="exercicioCarga" placeholder="Nome do exercício">
+
+<input id="pesoCarga" type="number" step="0.5" placeholder="Peso utilizado (kg)">
+
+<input id="repsCarga" type="number" placeholder="Repetições realizadas">
+
+<button onclick="salvarCarga()">Salvar registro</button>
+
+<div id="historicoCargas"></div>
+</div>
 <div class="card">
 <h2>⏱ Cronômetro</h2>
 <div id="timer">00:00</div>
@@ -405,6 +418,62 @@ localStorage.setItem('basefit-sexo',f?'feminino':'masculino');
 let salvo=localStorage.getItem('basefit-sexo');
 if(salvo){document.getElementById('sexo').value=salvo;tema();}
 mostrarTreinos();
+function salvarCarga(){
+  const exercicio = document.getElementById('exercicioCarga').value.trim();
+  const peso = document.getElementById('pesoCarga').value;
+  const reps = document.getElementById('repsCarga').value;
+
+  if(!exercicio || peso === '' || reps === ''){
+    alert('Preencha exercício, peso e repetições.');
+    return;
+  }
+
+  const lista = JSON.parse(localStorage.getItem('basefit-cargas') || '[]');
+
+  lista.push({
+    exercicio: exercicio,
+    peso: Number(peso),
+    reps: Number(reps),
+    data: new Date().toLocaleDateString('pt-BR')
+  });
+
+  localStorage.setItem('basefit-cargas', JSON.stringify(lista));
+
+  document.getElementById('exercicioCarga').value = '';
+  document.getElementById('pesoCarga').value = '';
+  document.getElementById('repsCarga').value = '';
+
+  mostrarCargas();
+  alert('Registro salvo com sucesso!');
+}
+
+function mostrarCargas(){
+  const lista = JSON.parse(localStorage.getItem('basefit-cargas') || '[]');
+  const area = document.getElementById('historicoCargas');
+
+  if(!area) return;
+
+  area.innerHTML = '<h3>Histórico de cargas</h3>';
+
+  [...lista].reverse().forEach(registro => {
+    const item = document.createElement('div');
+    item.className = 'card';
+
+    const titulo = document.createElement('b');
+    titulo.textContent = registro.exercicio;
+
+    const detalhes = document.createElement('p');
+    detalhes.textContent = registro.peso + ' kg × ' + registro.reps + ' repetições';
+
+    const data = document.createElement('small');
+    data.textContent = registro.data;
+
+    item.append(titulo, detalhes, data);
+    area.appendChild(item);
+  });
+}
+
+mostrarCargas();
 </script>
 </body>
 </html>
