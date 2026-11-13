@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BASE FIT TBWS</title>
+<style>
+:root { --cor:#b7ff00; }
+* { box-sizing:border-box; }
+body {
+  margin:0; padding:20px;
+  background:#080808; color:white;
+  font-family:Arial,sans-serif;
+}
+header { padding:20px 0; }
+h1 { font-size:30px; }
+h1 span { color:var(--cor); }
+p { color:#aaa; }
+.card {
+  background:#191919; border:1px solid #333;
+  border-radius:15px; padding:18px;
+  margin:15px 0;
+}
+button,select {
+  background:var(--cor); color:#080808;
+  border:0; border-radius:8px;
+  padding:12px; font-weight:bold;
+  margin:4px;
+}
+#timer { font-size:36px; margin:15px 0; }
+</style>
+</head>
+<body>
+<header>
+<h1>BASE FIT <span>TBWS</span></h1>
+<p>TRAIN • TRACK • EVOLVE</p>
+</header>
+
+<div class="card">
+<h2>Bem-vindo!</h2>
+<p>Sua evolução começa aqui.</p>
+<label>Personalizar interface:</label><br>
+<select id="sexo" onchange="tema()">
+<option value="masculino">Masculino</option>
+<option value="feminino">Feminino</option>
+</select>
+</div>
+
+<div class="card">
+<h2>Treinos</h2>
+<p>Organize seus exercícios e acompanhe seu progresso.</p>
+</div>
+
+<div class="card">
+<h2>Cronômetro</h2>
+<div id="timer">00:00</div>
+<button onclick="iniciar()">Iniciar</button>
+<button onclick="pausar()">Pausar</button>
+<button onclick="zerar()">Zerar</button>
+</div>
+
+<div class="card"><h2>Dieta</h2><p>Controle sua alimentação.</p></div>
+<div class="card"><h2>Meu Corpo</h2><p>Acompanhe suas medidas e evolução.</p></div>
+<div class="card"><h2>Motivacional</h2><p>Disciplina e superação todos os dias.</p></div>
+
+<script>
+let segundos=0, intervalo=null;
+function atualizar(){
+let m=String(Math.floor(segundos/60)).padStart(2,'0');
+let s=String(segundos%60).padStart(2,'0');
+document.getElementById('timer').textContent=m+':'+s;
+}
+function iniciar(){
+if(!intervalo) intervalo=setInterval(()=>{
+segundos++; atualizar();
+},1000);
+}
+function pausar(){clearInterval(intervalo);intervalo=null;}
+function zerar(){pausar();segundos=0;atualizar();}
+function tema(){
+let f=document.getElementById('sexo').value==='feminino';
+document.documentElement.style.setProperty('--cor',f?'#ff69b4':'#b7ff00');
+localStorage.setItem('basefit-sexo',f?'feminino':'masculino');
+}
+let salvo=localStorage.getItem('basefit-sexo');
+if(salvo){document.getElementById('sexo').value=salvo;tema();}
+</script>
+</body>
+</html>
