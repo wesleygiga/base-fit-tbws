@@ -154,6 +154,7 @@ async function lerFoto(){
   }
 }
 
+
 function organizarTreino(){
   const texto=document.getElementById('transcricao').value.trim();
   const area=document.getElementById('treinoOrganizado');
@@ -163,39 +164,132 @@ function organizarTreino(){
     return;
   }
 
-  const linhas=texto.split('\n')
-    .map(l=>l.trim())
-    .filter(l=>l.length>2);
+  const linhas=texto.split('\n');
+  const itens=[];
+  let treino='Treino';
 
-  area.innerHTML='<h3>📋 Revisar transcrição</h3>';
+  const ignorar=/volume semanal|volume total|total geral|total:|frequência|frequencia|duração|duracao|pontos importantes|informações importantes|informacoes importantes|hipertrofia|foco|disciplina|resultado|descanso adequado|progressão|progressao|treino original|grupo muscular|menos séries|mais séries/i;
 
-  linhas.forEach((linha,i)=>{
+  linhas.forEach(linha=>{
+    let limpa=linha.replace(/[|]/g,' ').trim();
+
+    if(!limpa || ignorar.test(limpa)) return;
+
+    const cabecalho=limpa.match(/TREINO\s*(I{1,3}|IV|V|[1-5])/i);
+
+    if(cabecalho){
+      treino='Treino '+cabecalho[1].toUpperCase();
+      return;
+    }
+
+    const numeros=limpa.match(/\d+/g);
+
+    if(!numeros || !/[a-zá-ú]/i.test(limpa)) return;
+
+    const nome=limpa
+      .replace(/\d+/g,' ')
+      .replace(/back.?off/gi,' ')
+      .replace(/[^a-zá-ú\s-]/gi,' ')
+      .replace(/\s+/g,' ')
+      .trim();
+
+    if(nome.length<4) return;
+
+    if(/exercício|exercicio|séries|series|treino/i.test(nome)) return;
+
+    itens.push({
+      treino,
+      nome,
+      series:numeros[0],
+      backoff:/back.?off/i.test(limpa)
+    });
+  });
+
+  area.innerHTML='<h3>📋 Ficha organizada</h3>';
+
+  if(!itens.length){
+    area.textContent='Não encontrei exercícios com séries identificáveis. Confira a transcrição original.';
+    return;
+  }
+
+  itens.forEach((item,i)=>{
     const card=document.createElement('div');
     card.className='card';
 
-    const titulo=document.createElement('label');
-    titulo.textContent='Item '+(i+1);
+    const titulo=document.createElement('h3');
+    titulo.textContent=item.treino+' - Exercício '+(i+1);
 
-    const campo=document.createElement('input');
-    campo.type='text';
-    campo.className='itemTreino';
-    campo.value=linha;
-    campo.style.width='100%';
+    const nome=document.createElement('input');
+    nome.className='nomeOrganizado';
+    nome.value=item.nome;
+    nome.placeholder='Nome do exercício';
+    nome.style.width='100%';
+
+    const serie=document.createElement('input');
+    serie.className='seriesOrganizadas';
+    serie.type='number';
+    serie.min='1';
+    serie.value=item.series;
+    serie.placeholder='Quantidade de séries';
+    serie.style.width='100%';
+
+    const grupo=document.createElement('input');
+    grupo.className='treinoOrganizadoNome';
+    grupo.value=item.treino;
+    grupo.style.width='100%';
+
+    const labelGrupo=document.createElement('p');
+    labelGrupo.textContent='Treino:';
+
+    const labelNome=document.createElement('p');
+    labelNome.textContent='Exercício:';
+
+    const labelSerie=document.createElement('p');
+    labelSerie.textContent='Séries:';
+
+    const backoff=document.createElement('input');
+    backoff.type='checkbox';
+    backoff.className='backoffOrganizado';
+    backoff.checked=item.backoff;
+
+    const labelBack=document.createElement('label');
+    labelBack.appendChild(backoff);
+    labelBack.appendChild(document.createTextNode(' Possui back-off'));
 
     card.appendChild(titulo);
-    card.appendChild(campo);
+    card.appendChild(labelGrupo);
+    card.appendChild(grupo);
+    card.appendChild(labelNome);
+    card.appendChild(nome);
+    card.appendChild(labelSerie);
+    card.appendChild(serie);
+    card.appendChild(labelBack);
+
     area.appendChild(card);
   });
 
   const botao=document.createElement('button');
   botao.textContent='Atualizar transcrição';
   botao.onclick=function(){
-    const itens=[...document.querySelectorAll('.itemTreino')]
-      .map(c=>c.value.trim())
-      .filter(Boolean);
+    const cards=[...area.querySelectorAll('.card')];
+    const resultado=[];
 
-    document.getElementById('transcricao').value=itens.join('\n');
-    alert('Transcrição atualizada!');
+    cards.forEach(card=>{
+      const treino=card.querySelector('.treinoOrganizadoNome').value.trim();
+      const nome=card.querySelector('.nomeOrganizado').value.trim();
+      const series=card.querySelector('.seriesOrganizadas').value;
+      const backoff=card.querySelector('.backoffOrganizado').checked;
+
+      if(nome && series){
+        resultado.push(
+          treino+'\n'+nome+' | '+series+' séries'+
+          (backoff?' | Back-off':'')
+        );
+      }
+    });
+
+    document.getElementById('transcricao').value=resultado.join('\n\n');
+    alert('Ficha atualizada! Agora você pode salvar o treino.');
   };
 
   area.appendChild(botao);
