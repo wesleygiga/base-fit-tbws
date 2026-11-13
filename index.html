@@ -22,25 +22,32 @@ textarea{min-height:180px}
 #timer{font-size:36px;margin:15px 0}
 small{color:#aaa}
 #telaInicial {
-  min-height: 75vh;
+  min-height: 100vh;
+  height: 100vh;
+  width: 100%;
   background: #080808;
-  border: 1px solid #b7ff00;
-  padding: 12px;
+  border: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
+  border-radius: 0;
 }
 
 .foto-perfil {
-  position: relative;
-  min-height: 55vh;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
   background: linear-gradient(160deg, #202020, #080808);
-  border-radius: 12px;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   overflow: hidden;
   padding: 20px;
 }
@@ -75,6 +82,24 @@ small{color:#aaa}
   z-index: 2;
   margin-top: 20px;
 }
+.atalhos {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.atalhos button {
+  background: rgba(0, 0, 0, 0.75);
+  color: #b7ff00;
+  border: 1px solid #b7ff00;
+  border-radius: 10px;
+  padding: 14px 8px;
+  font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -100,6 +125,14 @@ small{color:#aaa}
     <button onclick="document.getElementById('arquivoPerfil').click()">
       📷 Escolher foto
     </button>
+<div class="atalhos">
+  <button onclick="irPara('meusTreinos')">🏋️ Meus Treinos</button>
+  <button onclick="irPara('registroCargas')">📈 Cargas</button>
+  <button onclick="irPara('cronometro')">⏱ Cronômetro</button>
+  <button onclick="irPara('dieta')">🥗 Dieta</button>
+  <button onclick="irPara('meuCorpo')">📊 Meu Corpo</button>
+  <button onclick="irPara('motivacional')">🔥 Motivacional</button>
+</div>
   </div>
 <div class="atalhos">
   <button onclick="irPara('meusTreinos')">🏋️ Meus Treinos</button>
