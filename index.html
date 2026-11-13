@@ -73,18 +73,41 @@ small{color:#aaa}
 
 <script>
 let segundos=0,intervalo=null,imagem=null;
-
+let imagemData = '';
 function mostrarFoto(event){
 const arquivo=event.target.files[0];
 if(!arquivo)return;
+
 imagem=arquivo;
+
 const leitor=new FileReader();
+
 leitor.onload=e=>{
-document.getElementById('preview').src=e.target.result;
+const foto=new Image();
+
+foto.onload=()=>{
+const canvas=document.createElement('canvas');
+const limite=1200;
+const escala=Math.min(1,limite/foto.width);
+
+canvas.width=foto.width*escala;
+canvas.height=foto.height*escala;
+
+const ctx=canvas.getContext('2d');
+ctx.drawImage(foto,0,0,canvas.width,canvas.height);
+
+imagemData=canvas.toDataURL('image/jpeg',0.75);
+
+document.getElementById('preview').src=imagemData;
 document.getElementById('preview').style.display='block';
 };
+
+foto.src=e.target.result;
+};
+
 leitor.readAsDataURL(arquivo);
-document.getElementById('status').textContent='Imagem carregada. Pronta para leitura.';
+
+document.getElementById('status').textContent='Imagem carregada. Pronta para transcrição ou cadastro.';
 }
 
 
@@ -298,21 +321,62 @@ function organizarTreino(){
 function salvarTreino(){
 const nome=document.getElementById('nomeTreino').value.trim();
 const texto=document.getElementById('transcricao').value.trim();
-if(!nome||!texto){alert('Informe o nome e a transcrição.');return;}
+
+if(!nome){
+alert('Informe o nome da ficha.');
+return;
+}
+
+if(!texto && !imagemData){
+alert('Escolha uma foto ou faça a transcrição do treino.');
+return;
+}
+
 let lista=JSON.parse(localStorage.getItem('basefit-treinos')||'[]');
-lista.push({nome,texto,data:new Date().toLocaleDateString('pt-BR')});
+
+lista.push({
+nome:nome,
+texto:texto,
+foto:imagemData,
+data:new Date().toLocaleDateString('pt-BR')
+});
+
+try{
 localStorage.setItem('basefit-treinos',JSON.stringify(lista));
+}catch(e){
+alert('Espaço de armazenamento cheio. Tente uma foto menor.');
+return;
+}
+
 document.getElementById('nomeTreino').value='';
 document.getElementById('transcricao').value='';
+document.getElementById('preview').src='';
+document.getElementById('preview').style.display='none';
+
+imagemData='';
+imagem=null;
+
 mostrarTreinos();
-alert('Treino salvo!');
+alert('Ficha salva com sucesso!');
 }
 
 function mostrarTreinos(){
 const lista=JSON.parse(localStorage.getItem('basefit-treinos')||'[]');
+
 document.getElementById('treinosSalvos').innerHTML=
-'<h3>Treinos salvos</h3>'+
-lista.map((t,i)=>`<div class="card"><b>${t.nome}</b><small> • ${t.data}</small><p style="white-space:pre-wrap">${t.texto.replace(/</g,'&lt;')}</p><button onclick="excluirTreino(${i})">Excluir</button></div>`).join('');
+'<h3>Minhas fichas</h3>'+
+lista.map((t,i)=>`
+<div class="card">
+<b>${t.nome}</b>
+<small> • ${t.data}</small>
+
+${t.foto ? `<img src="${t.foto}" style="width:100%;max-height:400px;object-fit:contain;border-radius:10px;margin-top:10px;">` : ''}
+
+${t.texto ? `<p style="white-space:pre-wrap">${t.texto.replace(/</g,'&lt;')}</p>` : ''}
+
+<button onclick="excluirTreino(${i})">Excluir</button>
+</div>
+`).join('');
 }
 
 function excluirTreino(i){
