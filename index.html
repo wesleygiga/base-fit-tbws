@@ -63,14 +63,19 @@ small{color:#aaa}
 
 #semFoto {
   position: relative;
-  z-index: 1;
+  z-index: 4;
   text-align: center;
+  color: white;
+  text-shadow: 0 2px 8px black;
 }
 
 #semFoto h2 {
   color: #b7ff00;
   font-size: 28px;
   letter-spacing: 2px;
+  text-shadow: 0 3px 8px #000;
+  position: relative;
+  z-index: 5;
 }
 
 #semFoto p {
@@ -111,13 +116,16 @@ small{color:#aaa}
 <div class="card" id="telaInicial">
 
   <div class="foto-perfil">
-    <img id="fotoPerfil" style="display:none;">
+    <img id="fotoPerfil" 
 
-    <div id="semFoto">
-      <h2>BASE FIT TBWS</h2>
-      <p>TRAIN • TRACK • EVOLVE</p>
-      <p>Escolha sua foto de perfil</p>
-    </div>
+<div id="semFoto">
+  <h2>BASE FIT TBWS</h2>
+  <p>TRAIN • TRACK • EVOLVE</p>
+</div>
+
+<div id="mensagemFoto">
+  <p>Escolha sua foto de perfil</p>
+</div>
 
     <input type="file" id="arquivoPerfil"
     accept="image/*" hidden onchange="salvarFotoPerfil(event)">
@@ -133,14 +141,6 @@ small{color:#aaa}
   <button onclick="irPara('meuCorpo')">📊 Meu Corpo</button>
   <button onclick="irPara('motivacional')">🔥 Motivacional</button>
 </div>
-  </div>
-<div class="atalhos">
-  <button onclick="irPara('meusTreinos')">🏋️ Meus Treinos</button>
-  <button onclick="irPara('registroCargas')">📈 Cargas</button>
-  <button onclick="irPara('cronometro')">⏱ Cronômetro</button>
-  <button onclick="irPara('dieta')">🥗 Dieta</button>
-  <button onclick="irPara('meuCorpo')">📊 Meu Corpo</button>
-  <button onclick="irPara('motivacional')">🔥 Motivacional</button>
 </div>
   <h2>Bem-vindo!</h2>
   <p>Sua evolução começa aqui.</p>
@@ -702,7 +702,8 @@ function carregarFotoPerfil(){
   if(foto && imagem){
     imagem.src = foto;
     imagem.style.display = 'block';
-    if(semFoto) semFoto.style.display = 'none';
+    const mensagem = document.getElementById('mensagemFoto');
+if(mensagem) mensagem.style.display = 'none';
   }
 }
 
