@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BASE FIT TBWS</title>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>.js@5/dist/tesseract.min.js"></script>
 <style>
 :root{--cor:#b7ff00}
 *{box-sizing:border-box}
@@ -132,9 +132,67 @@ border: 2px solid #000000;
   font-size: 16px;
   font-weight: bold;
 }
+#telaLogin {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #080808;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 5px solid var(--cor);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: #191919;
+  border: 1px solid var(--cor);
+  border-radius: 18px;
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.login-card h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: white;
+}
+
+.login-card h1 span {
+  color: var(--cor);
+}
+
+.login-card p {
+  color: #aaa;
+}
+
+.login-card button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  font-size: 16px;
+}
 </style>
 </head>
 <body>
+<div id="telaLogin">
+  <div class="login-card">
+    <h1>BASE FIT <span>TBWS</span></h1>
+    <p>TRAIN • TRACK • EVOLVE</p>
+
+    <h2>Bem-vindo</h2>
+    <input type="email" id="emailLogin" placeholder="Seu e-mail">
+    <input type="password" id="senhaLogin" placeholder="Sua senha">
+
+    <button onclick="entrar()">ENTRAR</button>
+    <button onclick="criarConta()">CRIAR CONTA</button>
+
+    <p onclick="recuperarSenha()">Esqueci minha senha</p>
+    <p id="mensagemLogin"></p>
+  </div>
+</div>
 <header>
 <h1>BASE FIT <span>TBWS</span></h1>
 <p>TRAIN • TRACK • EVOLVE</p>
@@ -233,6 +291,13 @@ border: 2px solid #000000;
 <div class="card" id="motivacional"><h2>Motivacional</h2><p>Disciplina e superação todos os dias.</p></div>
 
 <script>
+const SUPABASE_URL = 'https://vytruambreigxbvknjmv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_G_Mgt3sKxdAabCIqz9TUOQ_QPuRbDIz';
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 let segundos=0,intervalo=null,imagem=null;
 let imagemData = '';
 function mostrarFoto(event){
