@@ -811,6 +811,92 @@ function irPara(id){
     });
   }
 }
+function mostrarApp(){
+  document.getElementById('telaLogin').style.display='none';
+  document.body.style.overflow='auto';
+}
+
+async function entrar(){
+  const email=document.getElementById('emailLogin').value.trim();
+  const senha=document.getElementById('senhaLogin').value;
+  const msg=document.getElementById('mensagemLogin');
+
+  if(!email || !senha){
+    msg.textContent='Preencha e-mail e senha.';
+    return;
+  }
+
+  msg.textContent='Entrando...';
+
+  const {error}=await db.auth.signInWithPassword({
+    email:email,
+    password:senha
+  });
+
+  if(error){
+    msg.textContent='Erro: '+error.message;
+  }else{
+    mostrarApp();
+  }
+}
+
+async function criarConta(){
+  const email=document.getElementById('emailLogin').value.trim();
+  const senha=document.getElementById('senhaLogin').value;
+  const msg=document.getElementById('mensagemLogin');
+
+  if(!email || !senha){
+    msg.textContent='Preencha e-mail e senha.';
+    return;
+  }
+
+  if(senha.length<6){
+    msg.textContent='A senha precisa ter pelo menos 6 caracteres.';
+    return;
+  }
+
+  msg.textContent='Criando conta...';
+
+  const {data,error}=await db.auth.signUp({
+    email:email,
+    password:senha,
+    options:{
+      emailRedirectTo:'https://wesleygiga.github.io/base-fit-tbws/'
+    }
+  });
+
+  if(error){
+    msg.textContent='Erro: '+error.message;
+  }else if(data.session){
+    mostrarApp();
+  }else{
+    msg.textContent='Conta criada! Confira seu e-mail para confirmar o cadastro.';
+  }
+}
+
+async function recuperarSenha(){
+  const email=document.getElementById('emailLogin').value.trim();
+  const msg=document.getElementById('mensagemLogin');
+
+  if(!email){
+    msg.textContent='Digite seu e-mail primeiro.';
+    return;
+  }
+
+  const {error}=await db.auth.resetPasswordForEmail(email,{
+    redirectTo:'https://wesleygiga.github.io/base-fit-tbws/'
+  });
+
+  msg.textContent=error
+    ? 'Erro: '+error.message
+    : 'Confira seu e-mail para redefinir a senha.';
+}
+
+db.auth.onAuthStateChange((event,session)=>{
+  if(session){
+    mostrarApp();
+  }
+});
 </script>
 </body>
 </html>
