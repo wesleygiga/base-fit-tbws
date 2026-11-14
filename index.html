@@ -856,7 +856,7 @@ async function criarConta(){
   }
 
   msg.textContent='Criando conta...';
-
+console.log('Iniciando cadastro...');
   const {data,error}=await db.auth.signUp({
     email:email,
     password:senha,
