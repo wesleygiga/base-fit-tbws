@@ -314,6 +314,7 @@ const db = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+let usuarioAtualId = null;
 let segundos=0,intervalo=null,imagem=null;
 let imagemData = '';
 function mostrarFoto(event){
@@ -929,7 +930,6 @@ window.recuperarSenha = async function(){
     ? 'Erro: '+error.message
     : 'Confira seu e-mail para redefinir a senha.';
 }
-let usuarioAtualId = null;
 db.auth.onAuthStateChange((event,session)=>{
   if(session){
     usuarioAtualId = session.user.id;
