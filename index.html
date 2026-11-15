@@ -846,7 +846,7 @@ function mostrarApp(){
   document.body.style.overflow='auto';
 }
 
-async function entrar(){
+window.entrar = async function(){
   const email=document.getElementById('emailLogin').value.trim();
   const senha=document.getElementById('senhaLogin').value;
   const msg=document.getElementById('mensagemLogin');
