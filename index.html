@@ -653,7 +653,6 @@ async function mostrarTreinos(){
     .from('treinos')
     .select('*')
     .eq('usuario_id',usuarioAtualId)
-    .order('created_at',{ascending:false});
 
   if(error){
     area.innerHTML='Erro ao carregar fichas: '+error.message;
