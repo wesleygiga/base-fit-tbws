@@ -789,7 +789,12 @@ function salvarFotoPerfil(event){
       const foto = canvas.toDataURL('image/jpeg', 0.70);
 
       try {
-        localStorage.setItem('basefit-foto-perfil', foto);
+        if(!usuarioAtualId){
+  alert('Entre na sua conta primeiro.');
+  return;
+}
+
+localStorage.setItem('basefit-foto-perfil-' + usuarioAtualId, foto);
         carregarFotoPerfil();
         alert('Foto de perfil salva!');
       } catch(erro) {
@@ -804,7 +809,9 @@ function salvarFotoPerfil(event){
 }
 
 function carregarFotoPerfil(){
-  const foto = localStorage.getItem('basefit-foto-perfil');
+  const foto = usuarioAtualId
+  ? localStorage.getItem('basefit-foto-perfil-' + usuarioAtualId)
+  : null;
   const imagem = document.getElementById('fotoPerfil');
   const semFoto = document.getElementById('semFoto');
 
