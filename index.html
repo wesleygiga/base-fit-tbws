@@ -640,14 +640,22 @@ function pausar(){clearInterval(intervalo);intervalo=null;}
 function zerar(){pausar();segundos=0;atualizar();}
 
 function tema(){
-let f=document.getElementById('sexo').value==='feminino';
-document.documentElement.style.setProperty('--cor',f?'#ff69b4':'#b7ff00');
-if(usuarioAtualId){
-  localStorage.setItem('basefit-sexo-' + usuarioAtualId, f?'feminino':'masculino');
+  let f=document.getElementById('sexo').value==='feminino';
+  document.documentElement.style.setProperty('--cor',f?'#ff69b4':'#b7ff00');
+
+  if(usuarioAtualId){
+    localStorage.setItem('basefit-sexo-' + usuarioAtualId, f?'feminino':'masculino');
+  }
 }
+
 let salvo=localStorage.getItem('basefit-sexo');
-if(salvo){document.getElementById('sexo').value=salvo;tema();}
+if(salvo){
+  document.getElementById('sexo').value=salvo;
+  tema();
+}
+
 mostrarTreinos();
+
 function salvarCarga(){
   const exercicio = document.getElementById('exercicioCarga').value.trim();
   const peso = document.getElementById('pesoCarga').value;
