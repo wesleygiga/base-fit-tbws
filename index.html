@@ -870,7 +870,7 @@ window.entrar = async function(){
   }
 }
 
-async function criarConta(){
+window.criarConta = async function(){
   const email=document.getElementById('emailLogin').value.trim();
   const senha=document.getElementById('senhaLogin').value;
   const msg=document.getElementById('mensagemLogin');
@@ -904,7 +904,7 @@ console.log('Iniciando cadastro...');
   }
 }
 
-async function recuperarSenha(){
+window.recuperarSenha = async function(){
   const email=document.getElementById('emailLogin').value.trim();
   const msg=document.getElementById('mensagemLogin');
 
