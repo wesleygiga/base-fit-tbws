@@ -642,7 +642,8 @@ function zerar(){pausar();segundos=0;atualizar();}
 function tema(){
 let f=document.getElementById('sexo').value==='feminino';
 document.documentElement.style.setProperty('--cor',f?'#ff69b4':'#b7ff00');
-localStorage.setItem('basefit-sexo',f?'feminino':'masculino');
+if(usuarioAtualId){
+  localStorage.setItem('basefit-sexo-' + usuarioAtualId, f?'feminino':'masculino');
 }
 let salvo=localStorage.getItem('basefit-sexo');
 if(salvo){document.getElementById('sexo').value=salvo;tema();}
@@ -814,10 +815,16 @@ function carregarFotoPerfil(){
   : null;
   const imagem = document.getElementById('fotoPerfil');
   const semFoto = document.getElementById('semFoto');
+if(imagem){
+  imagem.removeAttribute('src');
+  imagem.style.display='none';
+}
 
+if(semFoto) semFoto.style.display='block';
   if(foto && imagem){
     imagem.src = foto;
     imagem.style.display = 'block';
+    if(semFoto) semFoto.style.display='none';
     const mensagem = document.getElementById('mensagemFoto');
 if(mensagem) mensagem.style.display = 'none';
   }
@@ -918,7 +925,17 @@ let usuarioAtualId = null;
 db.auth.onAuthStateChange((event,session)=>{
   if(session){
     usuarioAtualId = session.user.id;
-    mostrarApp();
+
+const sexoSalvo = localStorage.getItem('basefit-sexo-' + usuarioAtualId) || 'masculino';
+
+document.getElementById('sexo').value = sexoSalvo;
+
+document.documentElement.style.setProperty(
+  '--cor',
+  sexoSalvo === 'feminino' ? '#ff69b4' : '#b7ff00'
+);
+
+mostrarApp();
     carregarFotoPerfil();
   }else{
     usuarioAtualId = null;
@@ -931,6 +948,20 @@ async function sairConta(){
     alert('Erro ao sair: '+error.message);
     return;
   }
+
+  usuarioAtualId = null;
+
+  const imagem = document.getElementById('fotoPerfil');
+  if(imagem){
+    imagem.removeAttribute('src');
+    imagem.style.display='none';
+  }
+
+  const semFoto = document.getElementById('semFoto');
+  if(semFoto) semFoto.style.display='block';
+
+  document.getElementById('sexo').value='masculino';
+  document.documentElement.style.setProperty('--cor','#b7ff00');
 
   document.getElementById('telaLogin').style.display='flex';
   document.getElementById('emailLogin').value='';
