@@ -926,19 +926,31 @@ db.auth.onAuthStateChange((event,session)=>{
   if(session){
     usuarioAtualId = session.user.id;
 
-const sexoSalvo = localStorage.getItem('basefit-sexo-' + usuarioAtualId) || 'masculino';
+    const sexoSalvo = localStorage.getItem('basefit-sexo-' + usuarioAtualId) || 'masculino';
 
-document.getElementById('sexo').value = sexoSalvo;
+    document.getElementById('sexo').value = sexoSalvo;
 
-document.documentElement.style.setProperty(
-  '--cor',
-  sexoSalvo === 'feminino' ? '#ff69b4' : '#b7ff00'
-);
+    document.documentElement.style.setProperty(
+      '--cor',
+      sexoSalvo === 'feminino' ? '#ff69b4' : '#b7ff00'
+    );
 
-mostrarApp();
+    mostrarApp();
     carregarFotoPerfil();
+
   }else{
     usuarioAtualId = null;
+
+    const imagem = document.getElementById('fotoPerfil');
+    if(imagem){
+      imagem.removeAttribute('src');
+      imagem.style.display='none';
+    }
+
+    const semFoto = document.getElementById('semFoto');
+    if(semFoto) semFoto.style.display='block';
+
+    document.getElementById('telaLogin').style.display='flex';
   }
 });
 async function sairConta(){
