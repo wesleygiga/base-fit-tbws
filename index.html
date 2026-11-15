@@ -907,10 +907,14 @@ async function recuperarSenha(){
     ? 'Erro: '+error.message
     : 'Confira seu e-mail para redefinir a senha.';
 }
-
+let usuarioAtualId = null;
 db.auth.onAuthStateChange((event,session)=>{
   if(session){
+    usuarioAtualId = session.user.id;
     mostrarApp();
+    carregarFotoPerfil();
+  }else{
+    usuarioAtualId = null;
   }
 });
 async function sairConta(){
