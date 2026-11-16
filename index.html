@@ -1019,14 +1019,17 @@ if(mensagem) mensagem.style.display = 'none';
 
 carregarFotoPerfil();
 function irPara(id){
+  document.querySelectorAll('.tela-app').forEach(tela => {
+    tela.style.display = 'none';
+  });
+
   const destino = document.getElementById(id);
 
   if(destino){
-    destino.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
+    destino.style.display = 'block';
   }
+
+  document.getElementById('inicioApp').style.display = 'none';
 }
 function mostrarApp(){
   document.getElementById('telaLogin').style.display='none';
