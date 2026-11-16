@@ -118,21 +118,21 @@ border: 5px solid var(--cor);
   z-index: 5;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 14px;
   width: 100%;
-  margin-top: auto;
-  padding-bottom: 25px;
+  margin-top: 25px;
+  padding: 10px;
 }
 
 .atalhos button {
-    background: var(--cor);
-color: #080808;
-border: 2px solid #000000;
-  border-radius: 12px;
-  padding: 20px 10px;
-  min-height: 75px;
+  height: 135px;
+  border: 2px solid var(--cor);
+  border-radius: 16px;
+  background: #151515;
+  color: white;
   font-size: 16px;
   font-weight: bold;
+  box-shadow: 0 4px 15px #000;
 }
 #telaLogin {
   position: fixed;
@@ -236,12 +236,31 @@ border: 2px solid #000000;
       📷 Escolher foto
     </button>
 <div class="atalhos">
-  <button onclick="irPara('meusTreinos')">🏋️ Meus Treinos</button>
-  <button onclick="irPara('registroCargas')">📈 Cargas</button>
-  <button onclick="irPara('cronometro')">⏱ Cronômetro</button>
-  <button onclick="irPara('dieta')">🥗 Dieta</button>
-  <button onclick="irPara('meuCorpo')">📊 Meu Corpo</button>
-  <button onclick="irPara('motivacional')">🔥 Motivacional</button>
+
+  <button onclick="irPara('meusTreinos')" style="background:linear-gradient(#0006,#000b),url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48') center/cover;">
+    🏋️ MEUS TREINOS
+  </button>
+
+  <button onclick="irPara('registroCargas')" style="background:linear-gradient(#0006,#000b),url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61') center/cover;">
+    📈 CARGAS
+  </button>
+
+  <button onclick="irPara('cronometro')" style="background:linear-gradient(#0006,#000b),url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438') center/cover;">
+    ⏱ CRONÔMETRO
+  </button>
+
+  <button onclick="irPara('dieta')" style="background:linear-gradient(#0006,#000b),url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c') center/cover;">
+    🥗 DIETA
+  </button>
+
+  <button onclick="irPara('meuCorpo')" style="background:linear-gradient(#0006,#000b),url('https://images.unsplash.com/photo-1538805060514-97d9cc17730c') center/cover;">
+    📊 MEU CORPO
+  </button>
+
+  <button onclick="irPara('motivacional')" style="background:linear-gradient(#0006,#000b),url('https://images.unsplash.com/photo-1518611012118-696072aa579a') center/cover;">
+    🔥 MOTIVACIONAL
+  </button>
+
 </div>
 </div>
   <h2>Bem-vindo!</h2>
