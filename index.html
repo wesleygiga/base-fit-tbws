@@ -185,7 +185,8 @@ border: 5px solid var(--cor);
 .btn-sair {
   position: absolute;
   top: 20px;
-  right: 20px;
+  left: 20px;
+  right: auto;
   z-index: 100;
   background: #111;
   color: var(--cor);
@@ -194,6 +195,12 @@ border: 5px solid var(--cor);
   padding: 10px 18px;
   font-weight: bold;
   letter-spacing: 1px;
+}
+.btn-foto {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
 }
 </style>
 </head>
@@ -205,6 +212,7 @@ border: 5px solid var(--cor);
 
     <h2>Bem-vindo</h2>
     <input type="email" id="emailLogin" placeholder="Seu e-mail">
+<input type="text" id="nomeCadastro" placeholder="Seu nome completo" style="display:none;">
     <input type="password" id="senhaLogin" placeholder="Sua senha">
 
     <button onclick="entrar()">ENTRAR</button>
@@ -238,7 +246,7 @@ border: 5px solid var(--cor);
     <input type="file" id="arquivoPerfil"
     accept="image/*" hidden onchange="salvarFotoPerfil(event)">
 
-    <button onclick="document.getElementById('arquivoPerfil').click()">
+    <button class="btn-foto" onclick="document.getElementById('arquivoPerfil').click()">
       📷 Escolher foto
     </button>
 <div class="atalhos">
@@ -269,8 +277,8 @@ border: 5px solid var(--cor);
 
 </div>
 </div>
-  <h2>Bem-vindo!</h2>
-  <p>Sua evolução começa aqui.</p>
+  <h2>Bem-vindo, <span id="nomeUsuario"></span>!</h2>
+<p>Sua evolução começa aqui.</p>
 
   <label>Personalizar interface:</label>
   <select id="sexo" onchange="tema()">
@@ -1102,17 +1110,25 @@ window.entrar = async function(){
     mostrarApp();
   }
 }
-
+document.querySelector('button[onclick="criarConta()"]').addEventListener('click', function(){
+  document.getElementById('nomeCadastro').style.display='block';
+});
+document.querySelector('button[onclick="entrar()"]').addEventListener('click', function(){
+  document.getElementById('nomeCadastro').style.display='none';
+});
 window.criarConta = async function(){
   const email=document.getElementById('emailLogin').value.trim();
   const senha=document.getElementById('senhaLogin').value;
   const msg=document.getElementById('mensagemLogin');
-
+const nome=document.getElementById('nomeCadastro').value.trim();
   if(!email || !senha){
     msg.textContent='Preencha e-mail e senha.';
     return;
   }
-
+if(!nome){
+  msg.textContent='Digite seu nome.';
+  return;
+}
   if(senha.length<6){
     msg.textContent='A senha precisa ter pelo menos 6 caracteres.';
     return;
@@ -1124,8 +1140,11 @@ console.log('Iniciando cadastro...');
     email:email,
     password:senha,
     options:{
-      emailRedirectTo:'https://wesleygiga.github.io/base-fit-tbws/'
-    }
+  data:{
+    nome:nome
+  },
+  emailRedirectTo:'https://wesleygiga.github.io/base-fit-tbws/'
+}
   });
 
   if(error){
@@ -1157,7 +1176,8 @@ window.recuperarSenha = async function(){
 db.auth.onAuthStateChange((event,session)=>{
   if(session){
     usuarioAtualId = session.user.id;
-
+const nome = session.user.user_metadata?.nome || session.user.email.split('@')[0];
+document.getElementById('nomeUsuario').textContent = nome;
     const sexoSalvo = localStorage.getItem('basefit-sexo-' + usuarioAtualId) || 'masculino';
 
     document.getElementById('sexo').value = sexoSalvo;
