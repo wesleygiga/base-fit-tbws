@@ -255,7 +255,7 @@ border: 2px solid #000000;
 
 </div>
 
-<div class="card" id="meusTreinos">
+<div class="card tela-app" id="meusTreinos" style="display:none;">
 <h2>🏋️ Meus Treinos</h2>
 <p>Cadastre sua ficha usando uma imagem.</p>
 <button type="button" onclick="document.getElementById('fotoGaleria').click()">🖼️ Escolher da galeria</button>
@@ -274,7 +274,7 @@ border: 2px solid #000000;
 <button onclick="salvarTreino()">Salvar treino</button>
 <div id="treinosSalvos"></div>
 </div>
-<div class="card" id="registroCargas">
+<div class="card tela-app" id="registroCargas" style="display:none;"><button onclick="voltarInicio()">← INÍCIO</button>
 <h2>🏋️ Registro de Cargas</h2>
 <p>Registre seu desempenho nos exercícios.</p>
 
@@ -294,7 +294,7 @@ border: 2px solid #000000;
 <div id="graficoCargas"></div>
 <div id="historicoCargas"></div>
 </div>
-<div class="card" id="cronometro">
+<div class="card tela-app" id="cronometro" style="display:none;"><button onclick="voltarInicio()">← INÍCIO</button>
 <h2>⏱ Cronômetro</h2>
 <div id="timer">00:00</div>
 <button onclick="iniciar()">Iniciar</button>
@@ -302,9 +302,9 @@ border: 2px solid #000000;
 <button onclick="zerar()">Zerar</button>
 </div>
 
-<div class="card" id="dieta"><h2>Dieta</h2><p>Controle sua alimentação.</p></div>
-<div class="card" id="meuCorpo"><h2>Meu Corpo</h2><p>Acompanhe suas medidas e evolução.</p></div>
-<div class="card" id="motivacional"><h2>Motivacional</h2><p>Disciplina e superação todos os dias.</p></div>
+<div class="card tela-app" <button onclick="voltarInicio()">← INÍCIO</button>id="dieta" style="display:none;"><button onclick="voltarInicio()">← INÍCIO</button><h2>Dieta</h2><p>Controle sua alimentação.</p></div>
+<div class="card tela-app" id="meuCorpo" style="display:none;"><button onclick="voltarInicio()">← INÍCIO</button><h2>Meu Corpo</h2><p>Acompanhe suas medidas e evolução.</p></div>
+<div class="card tela-app" id="motivacional" style="display:none;"><button onclick="voltarInicio()">← INÍCIO</button><h2>Motivacional</h2><p>Disciplina e superação todos os dias.</p></div>
 
 <script>
 const SUPABASE_URL = 'https://vytruambreigxbvknjmv.supabase.co';
@@ -1019,8 +1019,19 @@ if(mensagem) mensagem.style.display = 'none';
 
 carregarFotoPerfil();
 function irPara(id){
-  document.querySelectorAll('.tela-app').forEach(tela => {
-    tela.style.display = 'none';
+  const telas = [
+    'telaInicial',
+    'meusTreinos',
+    'registroCargas',
+    'cronometro',
+    'dieta',
+    'meuCorpo',
+    'motivacional'
+  ];
+
+  telas.forEach(telaId => {
+    const tela = document.getElementById(telaId);
+    if(tela) tela.style.display = 'none';
   });
 
   const destino = document.getElementById(id);
@@ -1028,8 +1039,9 @@ function irPara(id){
   if(destino){
     destino.style.display = 'block';
   }
-
-  document.getElementById('inicioApp').style.display = 'none';
+}
+function voltarInicio(){
+  irPara('telaInicial');
 }
 function mostrarApp(){
   document.getElementById('telaLogin').style.display='none';
