@@ -1284,6 +1284,147 @@ async function sairConta(){
   document.getElementById('senhaLogin').value='';
   document.getElementById('mensagemLogin').textContent='Você saiu da sua conta.';
 }
+
+const YOUTUBE_API_KEY = AIzaSyDZWuDEkKrFdHMPZzgcPJbKT0t3gBOPTJI;
+
+let playlistUploadsMotivacional = '';
+let proximaPaginaMotivacional = '';
+let carregandoVideosMotivacionais = false;
+
+async function carregarVideosMotivacionais() {
+  const lista = document.getElementById('listaVideosMotivacionais');
+  const botao = document.getElementById('btnMaisVideos');
+
+  if (!lista || carregandoVideosMotivacionais) return;
+
+  carregandoVideosMotivacionais = true;
+  botao.disabled = true;
+  botao.textContent = 'CARREGANDO...';
+
+  try {
+    if (!playlistUploadsMotivacional) {
+      const canalURL = new URL(
+        'https://www.googleapis.com/youtube/v3/channels'
+      );
+
+      canalURL.search = new URLSearchParams({
+        part: 'contentDetails',
+        forHandle: 'bmotivation',
+        key: YOUTUBE_API_KEY
+      });
+
+      const respostaCanal = await fetch(canalURL);
+      const dadosCanal = await respostaCanal.json();
+
+      if (!respostaCanal.ok || !dadosCanal.items?.length) {
+        throw new Error(dadosCanal.error?.message || 'Canal não encontrado.');
+      }
+
+      playlistUploadsMotivacional =
+        dadosCanal.items[0].contentDetails.relatedPlaylists.uploads;
+    }
+
+    const videosURL = new URL(
+      'https://www.googleapis.com/youtube/v3/playlistItems'
+    );
+
+    const parametros = {
+      part: 'snippet',
+      playlistId: playlistUploadsMotivacional,
+      maxResults: '12',
+      key: YOUTUBE_API_KEY
+    };
+
+    if (proximaPaginaMotivacional) {
+      parametros.pageToken = proximaPaginaMotivacional;
+    }
+
+    videosURL.search = new URLSearchParams(parametros);
+
+    const resposta = await fetch(videosURL);
+    const dados = await resposta.json();
+
+    if (!resposta.ok) {
+      throw new Error(dados.error?.message || 'Erro ao buscar vídeos.');
+    }
+
+    let player = document.getElementById('playerVideoMotivacional');
+
+    if (!player) {
+      player = document.createElement('div');
+      player.id = 'playerVideoMotivacional';
+      player.style.margin = '15px 0';
+      lista.parentNode.insertBefore(player, lista);
+    }
+
+    dados.items.forEach(item => {
+      const video = item.snippet;
+      const videoId = video.resourceId?.videoId;
+
+      if (!videoId) return;
+
+      const card = document.createElement('div');
+      card.style.cssText =
+        'background:#191919;border:1px solid var(--cor);border-radius:12px;padding:12px;margin:12px 0;';
+
+      const imagem = document.createElement('img');
+      imagem.src = video.thumbnails.high?.url ||
+                   video.thumbnails.medium?.url;
+      imagem.style.cssText =
+        'width:100%;border-radius:8px;display:block;';
+
+      const titulo = document.createElement('p');
+      titulo.textContent = video.title;
+      titulo.style.color = 'white';
+
+      const assistir = document.createElement('button');
+      assistir.textContent = '▶ ASSISTIR';
+      assistir.style.width = '100%';
+
+      assistir.onclick = () => {
+        player.innerHTML = '';
+
+        const iframe = document.createElement('iframe');
+        iframe.src =
+          'https://www.youtube-nocookie.com/embed/' + videoId;
+        iframe.title = video.title;
+        iframe.allow =
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        iframe.style.cssText =
+          'width:100%;aspect-ratio:16/9;border:0;border-radius:12px;';
+
+        player.appendChild(iframe);
+        player.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      card.appendChild(imagem);
+      card.appendChild(titulo);
+      card.appendChild(assistir);
+      lista.appendChild(card);
+    });
+
+    proximaPaginaMotivacional = dados.nextPageToken || '';
+
+    botao.style.display =
+      proximaPaginaMotivacional ? 'block' : 'none';
+
+  } catch (erro) {
+    lista.textContent = 'Não foi possível carregar os vídeos: ' + erro.message;
+    console.error(erro);
+  } finally {
+    carregandoVideosMotivacionais = false;
+    botao.disabled = false;
+    botao.textContent = 'CARREGAR MAIS VÍDEOS';
+  }
+}
+
+function carregarMaisVideos() {
+  carregarVideosMotivacionais();
+}
+
+carregarVideosMotivacionais();
+
 </script>
 </body>
 </html>
