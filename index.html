@@ -353,9 +353,17 @@ border:none;
     <option value="feminino">Feminino</option>
   </select>
 
+  <h3>👤 NOME DE USUÁRIO</h3>
+
+  <label>Novo nome:</label>
+  <input type="text" id="novoNomeUsuario" placeholder="Digite seu nome">
+
+  <button onclick="salvarNovoNome()">SALVAR NOME</button>
+
   <button onclick="voltarInicio()">← INÍCIO</button>
 
 </div>
+
 
 <div class="card tela-app" id="meusTreinos" style="display:none;"> style="display:none;">
 <button onclick="voltarInicio()">← INÍCIO</button>
@@ -1422,6 +1430,31 @@ async function carregarVideosMotivacionais() {
 
 function carregarMaisVideos() {
   carregarVideosMotivacionais();
+}
+
+async function salvarNovoNome(){
+  const novoNome = document.getElementById('novoNomeUsuario').value.trim();
+
+  if(!novoNome){
+    alert('Digite um nome antes de salvar.');
+    return;
+  }
+
+  const { data, error } = await db.auth.updateUser({
+    data: { nome: novoNome }
+  });
+
+  if(error){
+    alert('Erro ao atualizar nome: ' + error.message);
+    return;
+  }
+
+  document.getElementById('nomeUsuario').textContent =
+    data.user.user_metadata.nome;
+
+  document.getElementById('novoNomeUsuario').value = '';
+
+  alert('Nome atualizado com sucesso!');
 }
 
 </script>
