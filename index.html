@@ -202,6 +202,28 @@ border: 5px solid var(--cor);
   right: 20px;
   z-index: 100;
 }
+.saudacao {
+  position: absolute;
+  top: 38%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 50;
+  color: white;
+  display: block;
+  padding: 10px;
+}
+
+.saudacao h2 {
+  color: var(--cor);
+  font-size: 26px;
+  margin: 0 0 10px;
+}
+
+.saudacao p {
+  color: white;
+  font-size: 16px;
+}
 </style>
 </head>
 <body>
@@ -243,6 +265,11 @@ border: 5px solid var(--cor);
   <p>Escolha sua foto de perfil</p>
 </div>
 
+<div class="saudacao">
+  <h2>Bem-vindo, <span id="nomeUsuario"></span>!</h2>
+  <p>Sua evolução começa aqui.</p>
+</div>
+
     <input type="file" id="arquivoPerfil"
     accept="image/*" hidden onchange="salvarFotoPerfil(event)">
 
@@ -277,9 +304,7 @@ border: 5px solid var(--cor);
 
 </div>
 </div>
-  <h2>Bem-vindo, <span id="nomeUsuario"></span>!</h2>
-<p>Sua evolução começa aqui.</p>
-
+  
   <label>Personalizar interface:</label>
   <select id="sexo" onchange="tema()">
     <option value="masculino">Masculino</option>
