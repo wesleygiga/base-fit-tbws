@@ -73,7 +73,7 @@ border:none;
   z-index: 0;
 }
 
-#semFoto {
+.logo-basefit {
   position: relative;
   z-index: 4;
   width: 100%;
@@ -83,7 +83,7 @@ border:none;
   text-shadow: 0 2px 8px black;
 }
 
-#semFoto h2 {
+.logo-basefit h2 {
   color: #ffffff;
   font-family: 'Arial Black', 'Montserrat', sans-serif;
   font-size: 50px;
@@ -105,7 +105,7 @@ border:none;
   margin-bottom: 12px;
 }
 
-#semFoto p {
+.logo-basefit p {
   color: white;
 }
 
@@ -226,16 +226,17 @@ border:none;
   z-index: 100;
 }
 .saudacao {
-  position: absolute;
-  top: 160px;
-  left: 0;
+  position: relative;
+  top: auto;
+  left: auto;
   width: 100%;
   text-align: center;
-  z-index: 50;
+  z-index: 5;
   color: white;
   display: block;
   padding: 10px;
   box-sizing: border-box;
+  margin-top: 15px;
 }
 .saudacao h2 {
   color: var(--cor);
@@ -280,7 +281,7 @@ border:none;
 <button class="btn-sair" onclick="sairConta()">SAIR ↗</button>
     <img id="fotoPerfil" style="display:none;">
 
-<div id="semFoto">
+<div class="logo-basefit">
   <h2>BASE FIT</h2>
   <span class="marca-assinatura">BY TBWS</span>
   <p>TRAIN • TRACK • EVOLVE</p>
