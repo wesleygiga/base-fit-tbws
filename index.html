@@ -1126,8 +1126,16 @@ function irPara(id){
   const destino = document.getElementById(id);
 
   if(destino){
-    destino.style.display = 'block';
+  destino.style.display = 'block';
+
+  if(id === 'motivacional'){
+    const lista = document.getElementById('listaVideosMotivacionais');
+
+    if(lista && lista.children.length === 1){
+      carregarVideosMotivacionais();
+    }
   }
+}
 }
 function voltarInicio(){
   irPara('telaInicial');
@@ -1285,7 +1293,7 @@ async function sairConta(){
   document.getElementById('mensagemLogin').textContent='Você saiu da sua conta.';
 }
 
-const YOUTUBE_API_KEY = AIzaSyDZWuDEkKrFdHMPZzgcPJbKT0t3gBOPTJI;
+const YOUTUBE_API_KEY = 'AIzaSyDZWuDEkKrFdHMPZzgcPJbKT0t3gBOPTJI';
 
 let playlistUploadsMotivacional = '';
 let proximaPaginaMotivacional = '';
@@ -1422,8 +1430,6 @@ async function carregarVideosMotivacionais() {
 function carregarMaisVideos() {
   carregarVideosMotivacionais();
 }
-
-carregarVideosMotivacionais();
 
 </script>
 </body>
