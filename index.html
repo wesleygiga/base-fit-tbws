@@ -262,6 +262,105 @@ border:none;
   margin: 0;
 }
 }
+
+/* CRONÔMETRO ESTILO IPHONE */
+
+#relogioAnalogico {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px auto;
+}
+
+.mostrador {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  position: relative;
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      #999 0deg 1deg,
+      transparent 1deg 6deg
+    ),
+    radial-gradient(circle, #202020 65%, #080808 66%);
+  border: 3px solid #777;
+  box-shadow:
+    0 0 18px #000,
+    inset 0 0 15px #000;
+}
+
+.mostrador::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #171717 0%, #080808 100%);
+  border: 1px solid #444;
+}
+
+.ponteiro {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform-origin: bottom center;
+  border-radius: 10px;
+  z-index: 2;
+}
+
+.ponteiroMinutos {
+  width: 5px;
+  height: 75px;
+  margin-left: -2.5px;
+  background: #eeeeee;
+}
+
+.ponteiroSegundos {
+  width: 2px;
+  height: 105px;
+  margin-left: -1px;
+  background: #b6ff00;
+}
+
+.centroPonteiros {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background: #b6ff00;
+  border: 2px solid #111;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+#timer {
+  color: #b6ff00;
+  font-size: clamp(48px, 13vw, 76px);
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 2px;
+  margin: 20px 0 30px;
+  font-variant-numeric: tabular-nums;
+}
+
+.botoesCronometro {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.botoesCronometro button {
+  flex: 1;
+  min-width: 95px;
+  padding: 18px 10px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
 </style>
 </head>
 <body>
@@ -411,11 +510,24 @@ border:none;
 <div id="historicoCargas"></div>
 </div>
 <div class="card tela-app" id="cronometro" style="display:none;"><button onclick="voltarInicio()">← INÍCIO</button>
-<h2>⏱ Cronômetro</h2>
-<div id="timer">00:00</div>
-<button onclick="iniciar()">Iniciar</button>
-<button onclick="pausar()">Pausar</button>
-<button onclick="zerar()">Zerar</button>
+
+<h2>⏱ CRONÔMETRO</h2>
+
+<div id="relogioAnalogico">
+  <div class="mostrador">
+    <div class="ponteiro ponteiroMinutos" id="ponteiroMinutos"></div>
+    <div class="ponteiro ponteiroSegundos" id="ponteiroSegundos"></div>
+    <div class="centroPonteiros"></div>
+  </div>
+</div>
+
+<div id="timer">00:00,00</div>
+
+<div class="botoesCronometro">
+  <button onclick="iniciar()">INICIAR</button>
+  <button onclick="pausar()">PAUSAR</button>
+  <button onclick="zerar()">ZERAR</button>
+</div>
 </div>
 
 <div class="card tela-app" id="dieta" style="display:none;">
@@ -454,7 +566,7 @@ const db = window.supabase.createClient(
   SUPABASE_KEY
 );
 let usuarioAtualId = null;
-let segundos=0,intervalo=null,imagem=null;
+let tempoAcumulado=0, inicioCronometro=null, intervalo=null, imagem=null;
 let imagemData = '';
 function mostrarFoto(event){
 const arquivo=event.target.files[0];
@@ -876,15 +988,60 @@ async function excluirTreino(id){
 
 
 function atualizar(){
-let m=String(Math.floor(segundos/60)).padStart(2,'0');
-let s=String(segundos%60).padStart(2,'0');
-document.getElementById('timer').textContent=m+':'+s;
+  const agora = performance.now();
+  const decorrido = intervalo !== null
+    ? tempoAcumulado + (agora - inicioCronometro)
+    : tempoAcumulado;
+
+  const centesimos = Math.floor(decorrido / 10);
+  const minutos = Math.floor(centesimos / 6000);
+  const segundosRestantes = Math.floor(centesimos / 100) % 60;
+  const centesimosRestantes = centesimos % 100;
+
+  const texto =
+    String(minutos).padStart(2,'0') + ':' +
+    String(segundosRestantes).padStart(2,'0') + ',' +
+    String(centesimosRestantes).padStart(2,'0');
+
+  document.getElementById('timer').textContent = texto;
+
+  const segundosTotais = decorrido / 1000;
+  const anguloSegundos = (segundosTotais % 60) * 6;
+  const anguloMinutos = ((segundosTotais / 60) % 60) * 6;
+
+  document.getElementById('ponteiroSegundos').style.transform =
+    `rotate(${anguloSegundos}deg)`;
+
+  document.getElementById('ponteiroMinutos').style.transform =
+    `rotate(${anguloMinutos}deg)`;
 }
+
 function iniciar(){
-if(!intervalo)intervalo=setInterval(()=>{segundos++;atualizar();},1000);
+  if(intervalo !== null) return;
+
+  inicioCronometro = performance.now();
+  intervalo = setInterval(atualizar, 10);
+  atualizar();
 }
-function pausar(){clearInterval(intervalo);intervalo=null;}
-function zerar(){pausar();segundos=0;atualizar();}
+
+function pausar(){
+  if(intervalo === null) return;
+
+  tempoAcumulado += performance.now() - inicioCronometro;
+  clearInterval(intervalo);
+  intervalo = null;
+  inicioCronometro = null;
+  atualizar();
+}
+
+function zerar(){
+  if(intervalo !== null) clearInterval(intervalo);
+
+  intervalo = null;
+  inicioCronometro = null;
+  tempoAcumulado = 0;
+  atualizar();
+}
 
 function tema(){
   let f=document.getElementById('sexo').value==='feminino';
