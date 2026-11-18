@@ -1461,7 +1461,60 @@ async function salvarNovoNome(){
 
   alert('Nome atualizado com sucesso!');
 }
+async function excluirMinhaConta(){
+  const confirmacao = confirm(
+    'ATENÇÃO! Sua conta, treinos, cargas e fotos serão excluídos permanentemente. Deseja continuar?'
+  );
 
+  if(!confirmacao) return;
+
+  const confirmacaoFinal = prompt(
+    'Para confirmar a exclusão, digite EXCLUIR'
+  );
+
+  if(confirmacaoFinal !== 'EXCLUIR'){
+    alert('Exclusão cancelada.');
+    return;
+  }
+
+  try {
+    const { data: sessaoData } = await db.auth.getSession();
+    const token = sessaoData.session?.access_token;
+
+    if(!token){
+      alert('Você precisa estar conectado.');
+      return;
+    }
+
+    const resposta = await fetch(
+      SUPABASE_URL + '/functions/v1/excluir-conta',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'apikey': SUPABASE_KEY,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const resultado = await resposta.json();
+
+    if(!resposta.ok || !resultado.sucesso){
+      throw new Error(resultado.erro || 'Erro ao excluir conta.');
+    }
+localStorage.removeItem('basefit-foto-perfil-' + usuarioAtualId);
+localStorage.removeItem('basefit-sexo-' + usuarioAtualId);
+
+await db.auth.signOut();
+alert('Conta excluída com sucesso.');
+    await db.auth.signOut();
+    alert('Conta excluída com sucesso.');
+
+  } catch(erro) {
+    alert('Não foi possível excluir a conta: ' + erro.message);
+  }
+}
 </script>
 </body>
 </html>
