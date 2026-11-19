@@ -1951,6 +1951,32 @@ if(id === 'meuCorpo'){
 function voltarInicio(){
   irPara('telaInicial');
 }
+function carregarResumoCorporal(){
+
+  const peso = localStorage.getItem('basefitPesoAtual');
+  const imc = localStorage.getItem('basefitIMC');
+  const gordura = localStorage.getItem('basefitGorduraAtual');
+  const musculo = localStorage.getItem('basefitMusculoAtual');
+
+  if(peso){
+    document.getElementById('pesoCorpoAtual').textContent =
+      Number(peso).toFixed(1) + ' kg';
+  }
+
+  if(imc){
+    document.getElementById('imcCorpoAtual').textContent = imc;
+  }
+
+  if(gordura){
+    document.getElementById('gorduraCorpoAtual').textContent =
+      gordura + '%';
+  }
+
+  if(musculo){
+    document.getElementById('musculoCorpoAtual').textContent =
+      musculo + ' kg';
+  }
+}
 function mostrarApp(){
   document.getElementById('telaLogin').style.display='none';
   document.body.style.overflow='auto';
