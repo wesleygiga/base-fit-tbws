@@ -2045,6 +2045,42 @@ function calcularMassaMuscular(){
   document.getElementById('musculoCorpoAtual').textContent =
     massaMagra.toFixed(1) + ' kg';
 }
+function abrirRegistroManual(){
+
+  document.getElementById('areaRegistroDieta').innerHTML = `
+
+    <h3>✏️ ADICIONAR ALIMENTO</h3>
+
+    <label>Refeição:</label>
+    <select id="refeicaoDieta">
+      <option value="cafeDaManha">Café da manhã</option>
+      <option value="almoco">Almoço</option>
+      <option value="lanche">Lanche</option>
+      <option value="jantar">Jantar</option>
+      <option value="outrasRefeicoes">Outras refeições</option>
+    </select>
+
+    <label>Alimento:</label>
+    <input type="text" id="nomeAlimento" placeholder="Ex: Arroz">
+
+    <label>Quantidade (g):</label>
+    <input type="number" id="quantidadeAlimento" placeholder="Ex: 100">
+
+    <label>Calorias (kcal):</label>
+    <input type="number" id="caloriasAlimento" placeholder="Ex: 130">
+
+    <label>Proteínas (g):</label>
+    <input type="number" id="proteinasAlimento" placeholder="Ex: 2.5">
+
+    <label>Carboidratos (g):</label>
+    <input type="number" id="carboidratosAlimento" placeholder="Ex: 28">
+
+    <label>Gorduras (g):</label>
+    <input type="number" id="gordurasAlimento" placeholder="Ex: 0.3">
+
+    <button onclick="salvarAlimentoDieta()">SALVAR ALIMENTO</button>
+  `;
+}
 function irPara(id){
   const telas = [
     'telaInicial',
