@@ -833,7 +833,14 @@ const SUPABASE_KEY = 'sb_publishable_G_Mgt3sKxdAabCIqz9TUOQ_QPuRbDIz';
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_KEY
+  SUPABASE_KEY,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
 );
 let usuarioAtualId = null;
 let tmbAtual = null;
