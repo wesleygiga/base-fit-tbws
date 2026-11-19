@@ -770,9 +770,99 @@ border:none;
 </div>
 
 <div class="card tela-app" id="dieta" style="display:none;">
+
 <button onclick="voltarInicio()">← INÍCIO</button>
-<h2>Dieta</h2>
-<p>Controle sua alimentação.</p>
+
+<h2>🥗 MINHA DIETA</h2>
+<p>Controle sua alimentação e acompanhe seus resultados.</p>
+
+<hr>
+
+<h3>📊 RESUMO DIÁRIO</h3>
+
+<div class="corpo-resumo">
+
+  <div class="corpo-indicador">
+    <span>CALORIAS CONSUMIDAS</span>
+    <strong id="caloriasConsumidas">0 kcal</strong>
+  </div>
+
+  <div class="corpo-indicador">
+    <span>META DIÁRIA</span>
+    <strong id="metaCalorias">0 kcal</strong>
+  </div>
+
+  <div class="corpo-indicador">
+    <span>CALORIAS RESTANTES</span>
+    <strong id="caloriasRestantes">0 kcal</strong>
+  </div>
+
+  <div class="corpo-indicador">
+    <span>PROTEÍNAS</span>
+    <strong id="proteinasConsumidas">0 g</strong>
+  </div>
+
+  <div class="corpo-indicador">
+    <span>CARBOIDRATOS</span>
+    <strong id="carboidratosConsumidos">0 g</strong>
+  </div>
+
+  <div class="corpo-indicador">
+    <span>GORDURAS</span>
+    <strong id="gordurasConsumidas">0 g</strong>
+  </div>
+
+</div>
+
+<hr>
+
+<h3>🍽️ REFEIÇÕES</h3>
+
+<div id="listaRefeicoes">
+
+  <h4>🌅 CAFÉ DA MANHÃ</h4>
+  <div id="cafeDaManha"></div>
+
+  <h4>🍛 ALMOÇO</h4>
+  <div id="almoco"></div>
+
+  <h4>🥪 LANCHE</h4>
+  <div id="lanche"></div>
+
+  <h4>🌙 JANTAR</h4>
+  <div id="jantar"></div>
+
+  <h4>🍎 OUTRAS REFEIÇÕES</h4>
+  <div id="outrasRefeicoes"></div>
+
+</div>
+
+<hr>
+
+<h3>➕ ADICIONAR ALIMENTOS</h3>
+
+<button onclick="abrirRegistroManual()">
+  ✏️ ADICIONAR MANUALMENTE
+</button>
+
+<button onclick="abrirRegistroFoto()">
+  📸 REGISTRAR POR FOTO
+</button>
+
+<div id="areaRegistroDieta"></div>
+
+<hr>
+
+<h3>📅 HISTÓRICO ALIMENTAR</h3>
+
+<div id="historicoDieta"></div>
+
+<hr>
+
+<h3>🎯 METAS NUTRICIONAIS</h3>
+
+<div id="areaMetasDieta"></div>
+
 </div>
 
 <div class="card tela-app" id="meuCorpo" style="display:none;">
