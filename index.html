@@ -855,8 +855,17 @@ border:none;
 
 <h3>📅 HISTÓRICO ALIMENTAR</h3>
 
+<label>ESCOLHER DATA:</label>
+
+<input
+  type="date"
+  id="dataConsultaHistorico"
+  onchange="mostrarHistoricoDieta()"
+>
+
 <div id="historicoDieta"></div>
 
+<div id="listaHistoricoDieta"></div>
 <hr>
 
 <h3>🎯 METAS NUTRICIONAIS</h3>
@@ -2272,7 +2281,74 @@ function salvarAlimentoDieta(){
 
   alert('Alimento salvo com sucesso!');
 }
+function mostrarHistoricoDieta(){
 
+  const registros = JSON.parse(
+    localStorage.getItem('basefitDietaRegistros') || '[]'
+  );
+
+  const campoData = document.getElementById('dataConsultaHistorico');
+  const lista = document.getElementById('listaHistoricoDieta');
+
+  if(!campoData || !lista) return;
+
+  if(!campoData.value){
+    const agora = new Date();
+
+    campoData.value = agora.getFullYear() + '-' +
+      String(agora.getMonth() + 1).padStart(2, '0') + '-' +
+      String(agora.getDate()).padStart(2, '0');
+  }
+
+  const dataEscolhida = campoData.value;
+
+  const alimentos = registros.filter(
+    item => item.data === dataEscolhida
+  );
+
+  lista.innerHTML = '';
+
+  const refeicoes = {
+    cafeDaManha: '☀️ Café da manhã',
+    almoco: '🍽️ Almoço',
+    lanche: '🍎 Lanche',
+    jantar: '🌙 Jantar',
+    outrasRefeicoes: '🥗 Outras refeições'
+  };
+
+  if(alimentos.length === 0){
+    lista.textContent = 'Nenhum alimento registrado nesta data.';
+    return;
+  }
+
+  Object.keys(refeicoes).forEach(refeicao => {
+
+    const grupo = alimentos.filter(
+      item => item.refeicao === refeicao
+    );
+
+    if(grupo.length === 0) return;
+
+    const titulo = document.createElement('h4');
+    titulo.textContent = refeicoes[refeicao];
+    lista.appendChild(titulo);
+
+    grupo.forEach(item => {
+
+      const alimento = document.createElement('p');
+
+      alimento.textContent =
+        item.nome + ' | ' +
+        item.quantidade + ' g | ' +
+        item.calorias + ' kcal | P: ' +
+        item.proteinas + ' g | C: ' +
+        item.carboidratos + ' g | G: ' +
+        item.gorduras + ' g';
+
+      lista.appendChild(alimento);
+    });
+  });
+}
 function atualizarTelaDieta(){
 
   const registros = JSON.parse(
@@ -2337,6 +2413,7 @@ function atualizarTelaDieta(){
 
   document.getElementById('historicoDieta').textContent =
     registros.length + ' alimento(s) registrado(s).';
+mostrarHistoricoDieta();
 }
 function irPara(id){
   const telas = [
