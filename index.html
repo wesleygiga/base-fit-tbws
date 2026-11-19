@@ -2331,19 +2331,42 @@ const regioesCorpo = {
   ]
 };
 
-function desenharSilhueta() {
+async function desenharSilhueta() {
   const container = document.getElementById('desenhoCorpo');
 
   if (!container) return;
 
   const costas = vistaCorpoAtual === 'costas';
 
+  let medidas = {};
+
+  const { data: { user } } = await db.auth.getUser();
+
+  if (user) {
+    const { data } = await db
+      .from('medidas_corpo')
+      .select('regiao, valor, criado_em')
+      .eq('usuario_id', user.id)
+      .eq('vista', vistaCorpoAtual)
+      .order('criado_em', { ascending: false });
+
+    if (data) {
+      data.forEach(m => {
+        if (!medidas[m.regiao]) {
+          medidas[m.regiao] = m.valor;
+        }
+      });
+    }
+  }
+
+  const regioes = regioesCorpo[vistaCorpoAtual];
+
   container.innerHTML = `
-    <svg viewBox="0 0 300 440"
-      style="width:100%;max-width:340px;height:auto;"
+    <svg viewBox="0 0 460 440"
+      style="width:100%;max-width:460px;height:auto;"
       xmlns="http://www.w3.org/2000/svg">
 
-      <g fill="white">
+      <g transform="translate(80,0)" fill="white">
         <circle cx="150" cy="32" r="23"/>
         <path d="
           M130 57
@@ -2377,24 +2400,56 @@ function desenharSilhueta() {
       </g>
 
       ${costas ? `
-        <path d="M110 255 Q150 235 190 255
-          L195 282 Q150 310 105 282 Z"
+        <path d="M190 255 Q230 235 270 255
+          L275 282 Q230 310 185 282 Z"
           fill="#B7FF00" opacity=".35"/>
       ` : `
-        <path d="M112 105 Q150 88 188 105
-          L188 145 Q150 160 112 145 Z"
+        <path d="M192 105 Q230 88 268 105
+          L268 145 Q230 160 192 145 Z"
           fill="#B7FF00" opacity=".25"/>
       `}
 
-      ${regioesCorpo[vistaCorpoAtual].map((r,i) => `
-        <g class="ponto-corpo" data-regiao="${r[0]}"
-          style="cursor:pointer">
-          <circle cx="${r[1]}" cy="${r[2]}" r="11"
-            fill="#B7FF00" stroke="#111" stroke-width="2"/>
-          <circle cx="${r[1]}" cy="${r[2]}" r="4"
-            fill="#111"/>
-        </g>
-      `).join('')}
+      ${regioes.map((r,i) => {
+        const x = r[1] + 80;
+        const esquerda = r[1] < 150;
+        const ladoEsquerdo = esquerda || (r[1] === 150 && i % 2 === 0);
+        const textoX = ladoEsquerdo ? 4 : 456;
+        const linhaX = ladoEsquerdo ? 105 : 355;
+        const ancora = ladoEsquerdo ? 'start' : 'end';
+        const valor = medidas[r[0]] !== undefined
+          ? medidas[r[0]] + ' cm'
+          : '-- cm';
+
+        return `
+          <g class="ponto-corpo"
+            data-regiao="${r[0]}"
+            style="cursor:pointer">
+
+            <line x1="${x}" y1="${r[2]}"
+              x2="${linhaX}" y2="${r[2]}"
+              stroke="#B7FF00" stroke-width="1.5"/>
+
+            <circle cx="${x}" cy="${r[2]}" r="10"
+              fill="#B7FF00" stroke="#111" stroke-width="2"/>
+
+            <circle cx="${x}" cy="${r[2]}" r="3"
+              fill="#111"/>
+
+            <text x="${textoX}" y="${r[2] - 5}"
+              fill="white" font-size="10"
+              text-anchor="${ancora}">
+              ${r[0]}
+            </text>
+
+            <text x="${textoX}" y="${r[2] + 9}"
+              fill="#B7FF00" font-size="11"
+              font-weight="bold"
+              text-anchor="${ancora}">
+              ${valor}
+            </text>
+          </g>
+        `;
+      }).join('')}
 
     </svg>
   `;
