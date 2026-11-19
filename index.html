@@ -593,7 +593,117 @@ border:none;
   <h2>🧮 CALCULADORAS</h2>
 
   <p>Ferramentas para acompanhar e melhorar seus resultados.</p>
+<h3>⚖️ CALCULADORA DE IMC</h3>
 
+<label>Peso (kg):</label>
+<input type="number" id="pesoIMC" placeholder="Ex: 100">
+
+<label>Altura (cm):</label>
+<input type="number" id="alturaIMC" placeholder="Ex: 195">
+
+<button onclick="calcularIMC()">CALCULAR IMC</button>
+
+<h3 id="resultadoIMC"></h3>
+<hr>
+
+<h3>🔥 CALCULADORA DE TMB</h3>
+
+<label>Idade:</label>
+<input type="number" id="idadeTMB" placeholder="Sua idade">
+
+<label>Sexo:</label>
+<select id="sexoTMB">
+  <option value="masculino">Masculino</option>
+  <option value="feminino">Feminino</option>
+</select>
+
+<label>Peso (kg):</label>
+<input type="number" id="pesoTMB" placeholder="Seu peso">
+
+<label>Altura (cm):</label>
+<input type="number" id="alturaTMB" placeholder="Sua altura">
+
+<button onclick="calcularTMB()">CALCULAR TMB</button>
+
+<h3 id="resultadoTMB"></h3>
+<hr>
+
+<h3>⚡ CALCULADORA DE TDEE</h3>
+
+<label>Nível de atividade:</label>
+<select id="atividadeTDEE">
+  <option value="1.2">Sedentário</option>
+  <option value="1.375">Levemente ativo (1 a 3 dias/semana)</option>
+  <option value="1.55">Moderadamente ativo (3 a 5 dias/semana)</option>
+  <option value="1.725">Muito ativo (6 a 7 dias/semana)</option>
+  <option value="1.9">Extremamente ativo</option>
+</select>
+
+<button onclick="calcularTDEE()">CALCULAR TDEE</button>
+
+<h3 id="resultadoTDEE"></h3>
+<hr>
+
+<h3>🥗 CALCULADORA DE MACRONUTRIENTES</h3>
+
+<label>Peso corporal (kg):</label>
+<input type="number" id="pesoMacros" placeholder="Seu peso">
+
+<label>Objetivo:</label>
+<select id="objetivoMacros">
+  <option value="1.6">Manutenção</option>
+  <option value="2">Hipertrofia</option>
+  <option value="2.2">Hipertrofia avançada</option>
+  <option value="1.8">Emagrecimento</option>
+</select>
+
+<label>Calorias diárias (kcal):</label>
+<input type="number" id="caloriasMacros" placeholder="Calorias do TDEE">
+
+<button onclick="calcularMacros()">CALCULAR MACROS</button>
+
+<h3 id="resultadoMacros"></h3>
+<hr>
+
+<h3>🏋️ CALCULADORA DE 1RM</h3>
+
+<label>Exercício:</label>
+<input type="text" id="exercicio1RM" placeholder="Ex: Supino reto">
+
+<label>Peso utilizado (kg):</label>
+<input type="number" id="peso1RM" placeholder="Peso levantado">
+
+<label>Repetições realizadas:</label>
+<input type="number" id="reps1RM" placeholder="Quantidade de repetições">
+
+<button onclick="calcular1RM()">CALCULAR 1RM</button>
+
+<h3 id="resultado1RM"></h3>
+<hr>
+
+<h3>📏 CALCULADORA DE GORDURA CORPORAL</h3>
+
+<label>Sexo:</label>
+<select id="sexoGordura">
+  <option value="masculino">Masculino</option>
+  <option value="feminino">Feminino</option>
+</select>
+
+<label>Altura (cm):</label>
+<input type="number" id="alturaGordura" placeholder="Altura">
+
+<label>Cintura (cm):</label>
+<input type="number" id="cinturaGordura" placeholder="Medida da cintura">
+
+<label>Pescoço (cm):</label>
+<input type="number" id="pescocoGordura" placeholder="Medida do pescoço">
+
+<label>Quadril (cm):</label>
+<input type="number" id="quadrilGordura" placeholder="Necessário para mulheres">
+
+<button onclick="calcularGordura()">CALCULAR GORDURA</button>
+
+<h3 id="resultadoGordura"></h3>
 </div>
 
  <div class="card tela-app" id="motivacional" style="display:none;">
@@ -625,6 +735,7 @@ const db = window.supabase.createClient(
   SUPABASE_KEY
 );
 let usuarioAtualId = null;
+let tmbAtual = null;
 let tempoAcumulado=0, inicioCronometro=null, intervalo=null, imagem=null;
 let imagemData = '';
 function mostrarFoto(event){
@@ -1332,6 +1443,163 @@ if(mensagem) mensagem.style.display = 'none';
 }
 
 carregarFotoPerfil();
+function calcularIMC(){
+
+  const peso = parseFloat(document.getElementById('pesoIMC').value);
+  const altura = parseFloat(document.getElementById('alturaIMC').value) / 100;
+
+  if(!peso || !altura || peso <= 0 || altura <= 0){
+    alert('Digite seu peso e sua altura corretamente.');
+    return;
+  }
+
+  const imc = peso / (altura * altura);
+
+  let classificacao = '';
+
+  if(imc < 18.5){
+    classificacao = 'Abaixo do peso';
+  } else if(imc < 25){
+    classificacao = 'Peso normal';
+  } else if(imc < 30){
+    classificacao = 'Sobrepeso';
+  } else if(imc < 35){
+    classificacao = 'Obesidade grau I';
+  } else if(imc < 40){
+    classificacao = 'Obesidade grau II';
+  } else {
+    classificacao = 'Obesidade grau III';
+  }
+
+  document.getElementById('resultadoIMC').textContent =
+    'Seu IMC: ' + imc.toFixed(1) + ' | ' + classificacao;
+}
+function calcularTMB(){
+
+  const idade = parseFloat(document.getElementById('idadeTMB').value);
+  const peso = parseFloat(document.getElementById('pesoTMB').value);
+  const altura = parseFloat(document.getElementById('alturaTMB').value);
+  const sexo = document.getElementById('sexoTMB').value;
+
+  if(!idade || !peso || !altura || idade <= 0 || peso <= 0 || altura <= 0){
+    alert('Preencha todos os campos corretamente.');
+    return;
+  }
+
+  let tmb;
+
+  if(sexo === 'masculino'){
+    tmb = (10 * peso) + (6.25 * altura) - (5 * idade) + 5;
+  } else {
+    tmb = (10 * peso) + (6.25 * altura) - (5 * idade) - 161;
+  }
+
+ tmbAtual = tmb;
+ document.getElementById('resultadoTMB').textContent =
+    'Sua TMB estimada: ' + Math.round(tmb) + ' kcal/dia';
+}
+function calcularTDEE(){
+
+  if(!tmbAtual){
+    alert('Primeiro calcule sua TMB.');
+    return;
+  }
+
+  const atividade = parseFloat(
+    document.getElementById('atividadeTDEE').value
+  );
+
+  const tdee = tmbAtual * atividade;
+
+  document.getElementById('resultadoTDEE').textContent =
+    'Seu gasto calórico diário estimado: ' +
+    Math.round(tdee) + ' kcal/dia';
+}
+function calcularMacros(){
+
+  const peso = parseFloat(document.getElementById('pesoMacros').value);
+  const proteinaPorKg = parseFloat(document.getElementById('objetivoMacros').value);
+  const calorias = parseFloat(document.getElementById('caloriasMacros').value);
+
+  if(!peso || !calorias || peso <= 0 || calorias <= 0){
+    alert('Preencha seu peso e suas calorias corretamente.');
+    return;
+  }
+
+  const proteinas = peso * proteinaPorKg;
+  const gorduras = (calorias * 0.25) / 9;
+  const carboidratos = (calorias - (proteinas * 4) - (gorduras * 9)) / 4;
+
+  if(carboidratos < 0){
+    alert('Calorias insuficientes para essa distribuição. Ajuste os valores.');
+    return;
+  }
+
+  document.getElementById('resultadoMacros').innerHTML =
+    '🥩 Proteínas: ' + Math.round(proteinas) + ' g/dia<br>' +
+    '🥑 Gorduras: ' + Math.round(gorduras) + ' g/dia<br>' +
+    '🍚 Carboidratos: ' + Math.round(carboidratos) + ' g/dia';
+}
+function calcular1RM(){
+
+  const exercicio = document.getElementById('exercicio1RM').value.trim();
+  const peso = parseFloat(document.getElementById('peso1RM').value);
+  const reps = parseInt(document.getElementById('reps1RM').value);
+
+  if(!exercicio || !peso || !reps || peso <= 0 || reps <= 0 || reps > 10){
+    alert('Preencha corretamente. Use de 1 a 10 repetições.');
+    return;
+  }
+
+  const resultado = peso * (1 + reps / 30);
+
+  document.getElementById('resultado1RM').textContent =
+    exercicio + ': 1RM estimado de ' + resultado.toFixed(1) + ' kg';
+}
+function calcularGordura(){
+
+  const sexo = document.getElementById('sexoGordura').value;
+  const altura = parseFloat(document.getElementById('alturaGordura').value);
+  const cintura = parseFloat(document.getElementById('cinturaGordura').value);
+  const pescoco = parseFloat(document.getElementById('pescocoGordura').value);
+  const quadril = parseFloat(document.getElementById('quadrilGordura').value);
+
+  if(!altura || !cintura || !pescoco || altura <= 0 || cintura <= 0 || pescoco <= 0){
+    alert('Preencha altura, cintura e pescoço corretamente.');
+    return;
+  }
+
+  const polegadas = valor => valor / 2.54;
+  let gordura;
+
+  if(sexo === 'masculino'){
+
+    if(cintura <= pescoco){
+      alert('A medida da cintura deve ser maior que a do pescoço.');
+      return;
+    }
+
+    gordura =
+      86.010 * Math.log10(polegadas(cintura - pescoco)) -
+      70.041 * Math.log10(polegadas(altura)) +
+      36.76;
+
+  } else {
+
+    if(!quadril || quadril <= 0 || cintura + quadril <= pescoco){
+      alert('Informe corretamente a medida do quadril.');
+      return;
+    }
+
+    gordura =
+      163.205 * Math.log10(polegadas(cintura + quadril - pescoco)) -
+      97.684 * Math.log10(polegadas(altura)) -
+      78.387;
+  }
+
+  document.getElementById('resultadoGordura').textContent =
+    'Gordura corporal estimada: ' + gordura.toFixed(1) + '%';
+}
 function irPara(id){
   const telas = [
     'telaInicial',
