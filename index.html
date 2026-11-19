@@ -2744,20 +2744,63 @@ function abrirSecaoCorpo(secao) {
     return;
   }
 
-  if (secao === 'evolucao') {
-    conteudo.innerHTML =
-      '<h3>EVOLUÇÃO</h3><p>Seu histórico de evolução será exibido aqui.</p>';
-  }
+if (secao === 'evolucao') {
+  const peso = localStorage.getItem('basefitPesoAtual');
+  const imc = localStorage.getItem('basefitIMC');
+  const gordura = localStorage.getItem('basefitGorduraAtual');
+  const musculo = localStorage.getItem('basefitMusculoAtual');
 
-  if (secao === 'composicao') {
-    conteudo.innerHTML =
-      '<h3>COMPOSIÇÃO CORPORAL</h3><p>Em desenvolvimento.</p>';
-  }
+  conteudo.innerHTML = `
+    <h3>📈 EVOLUÇÃO CORPORAL</h3>
 
-  if (secao === 'informacoes') {
-    conteudo.innerHTML =
-      '<h3>INFORMAÇÕES</h3><p>Acompanhe seus dados corporais aqui.</p>';
-  }
+    <p><strong>Peso atual:</strong> ${peso ? peso + ' kg' : 'Não calculado'}</p>
+
+    <p><strong>IMC:</strong> ${imc || 'Não calculado'}</p>
+
+    <p><strong>Gordura corporal:</strong> ${gordura ? gordura + '%' : 'Não calculado'}</p>
+
+    <p><strong>Massa muscular:</strong> ${musculo ? musculo + ' kg' : 'Não calculado'}</p>
+
+    <p>Continue registrando suas medidas para acompanhar suas mudanças.</p>
+  `;
+}
+
+ if (secao === 'composicao') {
+
+  const peso = localStorage.getItem('basefitPesoAtual');
+  const imc = localStorage.getItem('basefitIMC');
+  const gordura = localStorage.getItem('basefitGorduraAtual');
+  const musculo = localStorage.getItem('basefitMusculoAtual');
+
+  conteudo.innerHTML = `
+    <h3>⚖️ COMPOSIÇÃO CORPORAL</h3>
+
+    <p><strong>PESO ATUAL:</strong> ${peso ? peso + ' kg' : '-- kg'}</p>
+
+    <p><strong>IMC:</strong> ${imc || '--'}</p>
+
+    <p><strong>GORDURA CORPORAL:</strong> ${gordura ? gordura + '%' : '--%'}</p>
+
+    <p><strong>MASSA MUSCULAR:</strong> ${musculo ? musculo + ' kg' : '-- kg'}</p>
+  `;
+}
+
+ if (secao === 'informacoes') {
+
+  conteudo.innerHTML = `
+    <h3>📋 INFORMAÇÕES CORPORAIS</h3>
+
+    <p><strong>PESO:</strong> Seu peso corporal atual em quilogramas.</p>
+
+    <p><strong>IMC:</strong> Índice de Massa Corporal, relação entre peso e altura.</p>
+
+    <p><strong>GORDURA CORPORAL:</strong> Percentual estimado de gordura no corpo.</p>
+
+    <p><strong>MASSA MUSCULAR:</strong> Valor estimado a partir do peso e percentual de gordura. Representa massa magra, não músculo esquelético puro.</p>
+
+    <p>Atualize seus cálculos regularmente para acompanhar seus resultados.</p>
+  `;
+}
 }
 desenharSilhueta();
 
