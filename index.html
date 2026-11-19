@@ -1076,6 +1076,11 @@ border:none;
 <button onclick="calcularMacros()">CALCULAR MACROS</button>
 
 <h3 id="resultadoMacros"></h3>
+
+<button onclick="usarMacrosComoMetas()">
+  🎯 USAR COMO MINHAS METAS
+</button>
+
 <hr>
 
 <h3>🏋️ CALCULADORA DE 1RM</h3>
@@ -2323,6 +2328,35 @@ function salvarMetasNutricionais(){
   atualizarTelaDieta();
 
   alert('Metas nutricionais salvas com sucesso!');
+}
+function usarMacrosComoMetas(){
+
+  const peso = Number(document.getElementById('pesoMacros').value);
+  const proteinaPorKg = Number(document.getElementById('objetivoMacros').value);
+  const calorias = Number(document.getElementById('caloriasMacros').value);
+
+  if(!peso || !calorias || peso <= 0 || calorias <= 0){
+    alert('Calcule os macros primeiro.');
+    return;
+  }
+
+  const proteinas = peso * proteinaPorKg;
+  const gorduras = (calorias * 0.25) / 9;
+  const carboidratos = (calorias - (proteinas * 4) - (gorduras * 9)) / 4;
+
+  if(carboidratos < 0){
+    alert('Calorias insuficientes para essa distribuição.');
+    return;
+  }
+
+  localStorage.setItem('basefitMetaCalorias', calorias);
+  localStorage.setItem('basefitMetaProteinas', Math.round(proteinas));
+  localStorage.setItem('basefitMetaCarboidratos', Math.round(carboidratos));
+  localStorage.setItem('basefitMetaGorduras', Math.round(gorduras));
+
+  atualizarTelaDieta();
+
+  alert('Metas atualizadas com sucesso!');
 }
 function atualizarProgressoMetas(totais){
 
