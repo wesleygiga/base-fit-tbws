@@ -1002,6 +1002,23 @@ border:none;
 <button onclick="calcularGordura()">CALCULAR GORDURA</button>
 
 <h3 id="resultadoGordura"></h3>
+<hr>
+
+<h3>💪 CALCULADORA DE MASSA MUSCULAR</h3>
+
+<p class="descricao-calculadora">
+  Estime sua massa magra usando seu peso e percentual de gordura corporal.
+</p>
+
+<label>Peso corporal (kg):</label>
+<input type="number" id="pesoMassa" placeholder="Ex: 100">
+
+<label>Gordura corporal (%):</label>
+<input type="number" id="gorduraMassa" placeholder="Ex: 20">
+
+<button onclick="calcularMassaMuscular()">CALCULAR MASSA MAGRA</button>
+
+<h3 id="resultadoMassa"></h3>
 </div>
 
  <div class="card tela-app" id="motivacional" style="display:none;">
@@ -1917,6 +1934,26 @@ localStorage.setItem('basefitGorduraAtual', gordura.toFixed(1));
 
 document.getElementById('gorduraCorpoAtual').textContent =
   gordura.toFixed(1) + '%';
+}
+function calcularMassaMuscular(){
+
+  const peso = parseFloat(document.getElementById('pesoMassa').value);
+  const gordura = parseFloat(document.getElementById('gorduraMassa').value);
+
+  if(!peso || peso <= 0 || isNaN(gordura) || gordura < 0 || gordura >= 100){
+    alert('Informe um peso e um percentual de gordura válidos.');
+    return;
+  }
+
+  const massaMagra = peso * (1 - gordura / 100);
+
+  document.getElementById('resultadoMassa').textContent =
+    'Massa magra estimada: ' + massaMagra.toFixed(1) + ' kg';
+
+  localStorage.setItem('basefitMusculoAtual', massaMagra.toFixed(1));
+
+  document.getElementById('musculoCorpoAtual').textContent =
+    massaMagra.toFixed(1) + ' kg';
 }
 function irPara(id){
   const telas = [
