@@ -2045,6 +2045,7 @@ function calcularMassaMuscular(){
   document.getElementById('musculoCorpoAtual').textContent =
     massaMagra.toFixed(1) + ' kg';
 }
+
 function abrirRegistroManual(){
 
   document.getElementById('areaRegistroDieta').innerHTML = `
@@ -2081,6 +2082,117 @@ function abrirRegistroManual(){
     <button onclick="salvarAlimentoDieta()">SALVAR ALIMENTO</button>
   `;
 }
+function salvarAlimentoDieta(){
+
+  const nome = document.getElementById('nomeAlimento').value.trim();
+  const refeicao = document.getElementById('refeicaoDieta').value;
+  const quantidade = Number(document.getElementById('quantidadeAlimento').value);
+  const calorias = Number(document.getElementById('caloriasAlimento').value);
+  const proteinas = Number(document.getElementById('proteinasAlimento').value);
+  const carboidratos = Number(document.getElementById('carboidratosAlimento').value);
+  const gorduras = Number(document.getElementById('gordurasAlimento').value);
+
+  if(!nome || quantidade <= 0 || calorias < 0 ||
+     proteinas < 0 || carboidratos < 0 || gorduras < 0){
+    alert('Preencha corretamente os dados do alimento.');
+    return;
+  }
+
+  const agora = new Date();
+  const data = agora.getFullYear() + '-' +
+    String(agora.getMonth() + 1).padStart(2, '0') + '-' +
+    String(agora.getDate()).padStart(2, '0');
+
+  const registros = JSON.parse(
+    localStorage.getItem('basefitDietaRegistros') || '[]'
+  );
+
+  registros.push({
+    id: Date.now(),
+    nome,
+    refeicao,
+    quantidade,
+    calorias,
+    proteinas,
+    carboidratos,
+    gorduras,
+    data
+  });
+
+  localStorage.setItem('basefitDietaRegistros', JSON.stringify(registros));
+
+  document.getElementById('areaRegistroDieta').innerHTML = '';
+
+  atualizarTelaDieta();
+
+  alert('Alimento salvo com sucesso!');
+}
+
+function atualizarTelaDieta(){
+
+  const registros = JSON.parse(
+    localStorage.getItem('basefitDietaRegistros') || '[]'
+  );
+
+  const agora = new Date();
+  const hoje = agora.getFullYear() + '-' +
+    String(agora.getMonth() + 1).padStart(2, '0') + '-' +
+    String(agora.getDate()).padStart(2, '0');
+
+  const doDia = registros.filter(item => item.data === hoje);
+
+  const totais = {
+    calorias: 0,
+    proteinas: 0,
+    carboidratos: 0,
+    gorduras: 0
+  };
+
+  ['cafeDaManha','almoco','lanche','jantar','outrasRefeicoes']
+    .forEach(refeicao => {
+      const area = document.getElementById(refeicao);
+      if(area) area.innerHTML = '';
+    });
+
+  doDia.forEach(item => {
+    totais.calorias += item.calorias;
+    totais.proteinas += item.proteinas;
+    totais.carboidratos += item.carboidratos;
+    totais.gorduras += item.gorduras;
+
+    const area = document.getElementById(item.refeicao);
+
+    if(area){
+      const alimento = document.createElement('p');
+      alimento.textContent =
+        item.nome + ' - ' + item.quantidade + ' g | ' +
+        item.calorias + ' kcal';
+      area.appendChild(alimento);
+    }
+  });
+
+  const meta = Number(localStorage.getItem('basefitMetaCalorias') || 0);
+
+  document.getElementById('caloriasConsumidas').textContent =
+    Math.round(totais.calorias) + ' kcal';
+
+  document.getElementById('metaCalorias').textContent = meta + ' kcal';
+
+  document.getElementById('caloriasRestantes').textContent =
+    Math.max(0, meta - totais.calorias).toFixed(0) + ' kcal';
+
+  document.getElementById('proteinasConsumidas').textContent =
+    totais.proteinas.toFixed(1) + ' g';
+
+  document.getElementById('carboidratosConsumidos').textContent =
+    totais.carboidratos.toFixed(1) + ' g';
+
+  document.getElementById('gordurasConsumidas').textContent =
+    totais.gorduras.toFixed(1) + ' g';
+
+  document.getElementById('historicoDieta').textContent =
+    registros.length + ' alimento(s) registrado(s).';
+}
 function irPara(id){
   const telas = [
     'telaInicial',
@@ -2108,6 +2220,9 @@ if(id === 'meuCorpo'){
 }
   if(id === 'motivacional'){
   carregarVideosMotivacionais();
+  if(id === 'dieta'){
+    atualizarTelaDieta();
+  
 }
 }
 }
