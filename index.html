@@ -815,6 +815,27 @@ border:none;
 </div>
 
 <hr>
+<h3>🎯 MINHAS METAS NUTRICIONAIS</h3>
+
+<label>Calorias (kcal):</label>
+<input type="number" id="metaCaloriasInput" placeholder="Ex: 3000">
+
+<label>Proteínas (g):</label>
+<input type="number" id="metaProteinasInput" placeholder="Ex: 200">
+
+<label>Carboidratos (g):</label>
+<input type="number" id="metaCarboidratosInput" placeholder="Ex: 350">
+
+<label>Gorduras (g):</label>
+<input type="number" id="metaGordurasInput" placeholder="Ex: 80">
+
+<button onclick="salvarMetasNutricionais()">
+  💾 SALVAR METAS
+</button>
+
+<div id="progressoMetas"></div>
+
+<hr>
 
 <h3>🍽️ REFEIÇÕES</h3>
 
@@ -2281,6 +2302,84 @@ function salvarAlimentoDieta(){
 
   alert('Alimento salvo com sucesso!');
 }
+function salvarMetasNutricionais(){
+
+  const calorias = Number(document.getElementById('metaCaloriasInput').value);
+  const proteinas = Number(document.getElementById('metaProteinasInput').value);
+  const carboidratos = Number(document.getElementById('metaCarboidratosInput').value);
+  const gorduras = Number(document.getElementById('metaGordurasInput').value);
+
+  if(calorias <= 0 || proteinas <= 0 ||
+     carboidratos <= 0 || gorduras <= 0){
+    alert('Preencha todas as metas com valores maiores que zero.');
+    return;
+  }
+
+  localStorage.setItem('basefitMetaCalorias', calorias);
+  localStorage.setItem('basefitMetaProteinas', proteinas);
+  localStorage.setItem('basefitMetaCarboidratos', carboidratos);
+  localStorage.setItem('basefitMetaGorduras', gorduras);
+
+  atualizarTelaDieta();
+
+  alert('Metas nutricionais salvas com sucesso!');
+}
+function atualizarProgressoMetas(totais){
+
+  const metas = {
+    calorias: Number(localStorage.getItem('basefitMetaCalorias') || 0),
+    proteinas: Number(localStorage.getItem('basefitMetaProteinas') || 0),
+    carboidratos: Number(localStorage.getItem('basefitMetaCarboidratos') || 0),
+    gorduras: Number(localStorage.getItem('basefitMetaGorduras') || 0)
+  };
+
+  const nomes = {
+    calorias: 'Calorias',
+    proteinas: 'Proteínas',
+    carboidratos: 'Carboidratos',
+    gorduras: 'Gorduras'
+  };
+
+  const unidades = {
+    calorias: 'kcal',
+    proteinas: 'g',
+    carboidratos: 'g',
+    gorduras: 'g'
+  };
+
+  const area = document.getElementById('progressoMetas');
+
+  if(!area) return;
+
+  ['calorias','proteinas','carboidratos','gorduras'].forEach(tipo => {
+
+    const campo = document.getElementById(
+      tipo === 'calorias' ? 'metaCaloriasInput' : 'meta' +
+      tipo.charAt(0).toUpperCase() + tipo.slice(1) + 'Input'
+    );
+
+    if(campo) campo.value = metas[tipo] || '';
+
+  });
+
+  area.innerHTML = Object.keys(metas).map(tipo => {
+
+    const meta = metas[tipo];
+    const consumido = totais[tipo];
+    const percentual = meta > 0 ? consumido / meta * 100 : 0;
+    const progresso = Math.min(100, percentual);
+
+    return `
+      <div style="margin:15px 0;">
+        <strong>${nomes[tipo]}</strong>
+        <p>${consumido.toFixed(1)} / ${meta} ${unidades[tipo]}</p>
+        <progress value="${progresso}" max="100" style="width:100%;"></progress>
+        <small>${meta > 0 ? percentual.toFixed(1) + '% da meta' : 'Defina sua meta'}</small>
+      </div>
+    `;
+
+  }).join('');
+}
 function mostrarHistoricoDieta(){
 
   const registros = JSON.parse(
@@ -2410,6 +2509,8 @@ function atualizarTelaDieta(){
 
   document.getElementById('gordurasConsumidas').textContent =
     totais.gorduras.toFixed(1) + ' g';
+
+atualizarProgressoMetas(totais);
 
   document.getElementById('historicoDieta').textContent =
     registros.length + ' alimento(s) registrado(s).';
