@@ -2513,24 +2513,37 @@ async function salvarMedidaCorporal() {
     return;
   }
 
-  const { error } = await db
-    .from('medidas_corpo')
-    .insert({
-      usuario_id: user.id,
-      regiao: regiaoMedidaSelecionada,
-      valor: valor,
-      vista: vistaCorpoAtual
-    });
+  let resultado;
 
-  if (error) {
-    alert('Erro ao salvar medida: ' + error.message);
+  if (medidaEditandoId !== null) {
+    resultado = await db
+      .from('medidas_corpo')
+      .update({ valor: valor })
+      .eq('id', medidaEditandoId)
+      .eq('usuario_id', user.id);
+  } else {
+    resultado = await db
+      .from('medidas_corpo')
+      .insert({
+        usuario_id: user.id,
+        regiao: regiaoMedidaSelecionada,
+        valor: valor,
+        vista: vistaCorpoAtual
+      });
+  }
+
+  if (resultado.error) {
+    alert('Erro ao salvar medida: ' + resultado.error.message);
     return;
   }
 
-  alert('Medida salva com sucesso!');
-  fecharMedidaCorporal();
-}
+  alert(medidaEditandoId !== null
+    ? 'Medida atualizada com sucesso!'
+    : 'Medida salva com sucesso!');
 
+  fecharMedidaCorporal();
+  carregarMedidasCorporais();
+}
 async function carregarMedidasCorporais() {
   const conteudo = document.getElementById('conteudoSecaoCorpo');
 
@@ -2581,29 +2594,68 @@ async function carregarMedidasCorporais() {
     dataRegistro.textContent =
       new Date(medida.criado_em).toLocaleString('pt-BR');
 
-    item.append(nome, valor, dataRegistro);
+    const botoes = document.createElement('div');
+    botoes.style.display = 'flex';
+    botoes.style.gap = '10px';
+    botoes.style.marginTop = '10px';
+
+    const editar = document.createElement('button');
+    editar.textContent = '✏️ EDITAR';
+    editar.onclick = () =>
+      editarMedidaCorporal(medida.id, medida.regiao, medida.valor);
+
+    const excluir = document.createElement('button');
+    excluir.textContent = '🗑️ EXCLUIR';
+    excluir.onclick = () =>
+      excluirMedidaCorporal(medida.id);
+
+    botoes.append(editar, excluir);
+    item.append(nome, valor, dataRegistro, botoes);
     conteudo.appendChild(item);
   });
 }
-function abrirSecaoCorpo(secao) {
-  if (secao === 'medidas') {
-    carregarMedidasCorporais();
+function editarMedidaCorporal(id, regiao, valor) {
+  medidaEditandoId = id;
+  regiaoMedidaSelecionada = regiao;
+
+  document.getElementById('tituloMedidaCorporal').textContent =
+    'EDITAR: ' + regiao.toUpperCase();
+
+  document.getElementById('valorMedidaCorporal').value = valor;
+
+  document.getElementById('formMedidaCorporal').style.display = 'block';
+
+  document.getElementById('formMedidaCorporal')
+    .scrollIntoView({ behavior: 'smooth' });
+}
+
+async function excluirMedidaCorporal(id) {
+  const confirmar = confirm(
+    'Deseja realmente excluir esta medida?'
+  );
+
+  if (!confirmar) return;
+
+  const { data: { user } } = await db.auth.getUser();
+
+  if (!user) {
+    alert('Faça login novamente.');
     return;
   }
 
-  const conteudo = document.getElementById('conteudoSecaoCorpo');
+  const { error } = await db
+    .from('medidas_corpo')
+    .delete()
+    .eq('id', id)
+    .eq('usuario_id', user.id);
 
-  if (secao === 'evolucao') {
-    conteudo.innerHTML = '<h3>EVOLUÇÃO</h3><p>Seu histórico de evolução será exibido aqui.</p>';
+  if (error) {
+    alert('Erro ao excluir: ' + error.message);
+    return;
   }
 
-  if (secao === 'composicao') {
-    conteudo.innerHTML = '<h3>COMPOSIÇÃO CORPORAL</h3><p>Em desenvolvimento.</p>';
-  }
-
-  if (secao === 'informacoes') {
-    conteudo.innerHTML = '<h3>INFORMAÇÕES</h3><p>Acompanhe seus dados corporais aqui.</p>';
-  }
+  alert('Medida excluída com sucesso!');
+  carregarMedidasCorporais();
 }
 desenharSilhueta();
 
