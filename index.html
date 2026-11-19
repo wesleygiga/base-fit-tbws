@@ -2045,14 +2045,68 @@ function calcularMassaMuscular(){
   document.getElementById('musculoCorpoAtual').textContent =
     massaMagra.toFixed(1) + ' kg';
 }
-
+const bancoNutricionalTACO = [
+  {
+    nome: 'Arroz branco cozido',
+    calorias: 128,
+    proteinas: 2.5,
+    carboidratos: 28.1,
+    gorduras: 0.2
+  },
+  {
+    nome: 'Feijão carioca cozido',
+    calorias: 76,
+    proteinas: 4.8,
+    carboidratos: 13.6,
+    gorduras: 0.5
+  },
+  {
+    nome: 'Aveia em flocos crua',
+    calorias: 394,
+    proteinas: 13.9,
+    carboidratos: 66.6,
+    gorduras: 8.5
+  },
+  {
+    nome: 'Banana prata',
+    calorias: 98,
+    proteinas: 1.3,
+    carboidratos: 26,
+    gorduras: 0.1
+  },
+  {
+    nome: 'Peito de frango grelhado',
+    calorias: 159,
+    proteinas: 32,
+    carboidratos: 0,
+    gorduras: 2.5
+  },
+  {
+    nome: 'Ovo cozido',
+    calorias: 146,
+    proteinas: 13.3,
+    carboidratos: 0.6,
+    gorduras: 9.5
+  }
+];
 function abrirRegistroManual(){
 
   document.getElementById('areaRegistroDieta').innerHTML = `
 
     <h3>✏️ ADICIONAR ALIMENTO</h3>
 
-    <label>Refeição:</label>
+<label>🔎 PESQUISAR ALIMENTO:</label>
+
+<input
+  type="text"
+  id="buscaAlimentoDieta"
+  placeholder="Ex: arroz, frango, ovo..."
+  oninput="buscarAlimentoDieta()"
+>
+
+<div id="resultadosBuscaAlimento"></div>
+
+<label>Refeição:</label>
     <select id="refeicaoDieta">
       <option value="cafeDaManha">Café da manhã</option>
       <option value="almoco">Almoço</option>
@@ -2065,7 +2119,12 @@ function abrirRegistroManual(){
     <input type="text" id="nomeAlimento" placeholder="Ex: Arroz">
 
     <label>Quantidade (g):</label>
-    <input type="number" id="quantidadeAlimento" placeholder="Ex: 100">
+   <input
+  type="number"
+  id="quantidadeAlimento"
+  placeholder="Ex: 100"
+  oninput="calcularMacrosDieta()"
+>
 
     <label>Calorias (kcal):</label>
     <input type="number" id="caloriasAlimento" placeholder="Ex: 130">
@@ -2081,6 +2140,81 @@ function abrirRegistroManual(){
 
     <button onclick="salvarAlimentoDieta()">SALVAR ALIMENTO</button>
   `;
+}
+function buscarAlimentoDieta(){
+
+  const busca = document.getElementById('buscaAlimentoDieta').value
+    .trim()
+    .toLowerCase();
+
+  const resultados = document.getElementById('resultadosBuscaAlimento');
+
+  if(!busca){
+    resultados.innerHTML = '';
+    return;
+  }
+
+  const encontrados = bancoNutricionalTACO.filter(alimento =>
+    alimento.nome.toLowerCase().includes(busca)
+  );
+
+  if(encontrados.length === 0){
+    resultados.innerHTML = '<p>Nenhum alimento encontrado.</p>';
+    return;
+  }
+
+  resultados.innerHTML = encontrados.map(alimento => `
+    <button
+      type="button"
+      onclick="selecionarAlimentoDieta('${alimento.nome}')">
+      ${alimento.nome}
+    </button>
+  `).join('');
+}
+function selecionarAlimentoDieta(nome){
+
+  const alimento = bancoNutricionalTACO.find(a => a.nome === nome);
+
+  if(!alimento) return;
+
+  document.getElementById('nomeAlimento').value = alimento.nome;
+
+  document.getElementById('caloriasAlimento').dataset.por100 = alimento.calorias;
+  document.getElementById('proteinasAlimento').dataset.por100 = alimento.proteinas;
+  document.getElementById('carboidratosAlimento').dataset.por100 = alimento.carboidratos;
+  document.getElementById('gordurasAlimento').dataset.por100 = alimento.gorduras;
+
+  document.getElementById('buscaAlimentoDieta').value = alimento.nome;
+  document.getElementById('resultadosBuscaAlimento').innerHTML = '';
+
+  calcularMacrosDieta();
+}
+
+function calcularMacrosDieta(){
+
+  const quantidade = Number(
+    document.getElementById('quantidadeAlimento').value
+  );
+
+  const campos = [
+    'caloriasAlimento',
+    'proteinasAlimento',
+    'carboidratosAlimento',
+    'gordurasAlimento'
+  ];
+
+  campos.forEach(id => {
+
+    const campo = document.getElementById(id);
+
+    if(campo.dataset.por100 !== undefined && quantidade > 0){
+
+      campo.value = (
+        Number(campo.dataset.por100) * quantidade / 100
+      ).toFixed(1);
+
+    }
+  });
 }
 function salvarAlimentoDieta(){
 
