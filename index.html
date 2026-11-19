@@ -2308,6 +2308,7 @@ alert('Conta excluída com sucesso.');
 
 let vistaCorpoAtual = 'frente';
 let regiaoMedidaSelecionada = '';
+let medidaEditandoId = null;
 
 const regioesCorpo = {
   frente: [
@@ -2656,6 +2657,29 @@ async function excluirMedidaCorporal(id) {
 
   alert('Medida excluída com sucesso!');
   carregarMedidasCorporais();
+}
+function abrirSecaoCorpo(secao) {
+  const conteudo = document.getElementById('conteudoSecaoCorpo');
+
+  if (secao === 'medidas') {
+    carregarMedidasCorporais();
+    return;
+  }
+
+  if (secao === 'evolucao') {
+    conteudo.innerHTML =
+      '<h3>EVOLUÇÃO</h3><p>Seu histórico de evolução será exibido aqui.</p>';
+  }
+
+  if (secao === 'composicao') {
+    conteudo.innerHTML =
+      '<h3>COMPOSIÇÃO CORPORAL</h3><p>Em desenvolvimento.</p>';
+  }
+
+  if (secao === 'informacoes') {
+    conteudo.innerHTML =
+      '<h3>INFORMAÇÕES</h3><p>Acompanhe seus dados corporais aqui.</p>';
+  }
 }
 desenharSilhueta();
 
