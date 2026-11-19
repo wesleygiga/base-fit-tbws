@@ -821,7 +821,7 @@ border:none;
     </div>
 
     <div id="silhuetaCorporal">
-      <!-- SILHUETA SERÁ INSERIDA AQUI -->
+      <div id="desenhoCorpo"></div>
     </div>
 
     <p>Toque em uma região para registrar sua medida.</p>
@@ -2305,6 +2305,139 @@ alert('Conta excluída com sucesso.');
     alert('Não foi possível excluir a conta: ' + erro.message);
   }
 }
+
+let vistaCorpoAtual = 'frente';
+let regiaoMedidaSelecionada = '';
+
+const regioesCorpo = {
+  frente: [
+    ['Pescoço', 150, 43],
+    ['Ombros', 150, 83],
+    ['Peito', 150, 112],
+    ['Braço direito', 91, 137],
+    ['Braço esquerdo', 209, 137],
+    ['Antebraço direito', 78, 195],
+    ['Antebraço esquerdo', 222, 195],
+    ['Cintura', 150, 194],
+    ['Abdômen', 150, 235],
+    ['Quadril', 150, 275],
+    ['Coxa direita', 125, 330],
+    ['Coxa esquerda', 175, 330]
+  ],
+  costas: [
+    ['Glúteos', 150, 278],
+    ['Panturrilha direita', 123, 390],
+    ['Panturrilha esquerda', 177, 390]
+  ]
+};
+
+function desenharSilhueta() {
+  const container = document.getElementById('desenhoCorpo');
+
+  if (!container) return;
+
+  const costas = vistaCorpoAtual === 'costas';
+
+  container.innerHTML = `
+    <svg viewBox="0 0 300 440"
+      style="width:100%;max-width:340px;height:auto;"
+      xmlns="http://www.w3.org/2000/svg">
+
+      <g fill="white">
+        <circle cx="150" cy="32" r="23"/>
+        <path d="
+          M130 57
+          Q112 58 100 76
+          L78 104 L57 179
+          Q53 193 66 198
+          Q78 202 83 187
+          L105 119
+          L112 160
+          L103 263
+          Q99 278 111 284
+          L105 365
+          Q103 390 119 390
+          Q132 390 134 368
+          L150 292
+          L166 368
+          Q168 390 181 390
+          Q197 390 195 365
+          L189 284
+          Q201 278 197 263
+          L188 160
+          L195 119
+          L217 187
+          Q222 202 234 198
+          Q247 193 243 179
+          L222 104
+          L200 76
+          Q188 58 170 57
+          Z"/>
+        <rect x="137" y="48" width="26" height="24" rx="8"/>
+      </g>
+
+      ${costas ? `
+        <path d="M110 255 Q150 235 190 255
+          L195 282 Q150 310 105 282 Z"
+          fill="#B7FF00" opacity=".35"/>
+      ` : `
+        <path d="M112 105 Q150 88 188 105
+          L188 145 Q150 160 112 145 Z"
+          fill="#B7FF00" opacity=".25"/>
+      `}
+
+      ${regioesCorpo[vistaCorpoAtual].map((r,i) => `
+        <g class="ponto-corpo" data-regiao="${r[0]}"
+          style="cursor:pointer">
+          <circle cx="${r[1]}" cy="${r[2]}" r="11"
+            fill="#B7FF00" stroke="#111" stroke-width="2"/>
+          <circle cx="${r[1]}" cy="${r[2]}" r="4"
+            fill="#111"/>
+        </g>
+      `).join('')}
+
+    </svg>
+  `;
+
+  container.querySelectorAll('.ponto-corpo').forEach(ponto => {
+    ponto.addEventListener('click', () => {
+      selecionarMedidaCorporal(ponto.dataset.regiao);
+    });
+  });
+}
+
+function alternarVistaCorpo(vista) {
+  vistaCorpoAtual = vista;
+
+  document.getElementById('btnFrente').classList.toggle(
+    'ativo', vista === 'frente'
+  );
+
+  document.getElementById('btnCostas').classList.toggle(
+    'ativo', vista === 'costas'
+  );
+
+  desenharSilhueta();
+}
+
+function selecionarMedidaCorporal(regiao) {
+  regiaoMedidaSelecionada = regiao;
+
+  document.getElementById('tituloMedidaCorporal').textContent =
+    'REGISTRAR: ' + regiao.toUpperCase();
+
+  document.getElementById('valorMedidaCorporal').value = '';
+
+  document.getElementById('formMedidaCorporal').style.display = 'block';
+}
+
+function fecharMedidaCorporal() {
+  document.getElementById('formMedidaCorporal').style.display = 'none';
+  regiaoMedidaSelecionada = '';
+}
+
+desenharSilhueta();
+
 </script>
 </body>
 </html>
