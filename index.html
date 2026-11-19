@@ -397,6 +397,87 @@ border:none;
 .numero.destaque {
   color: #ff3030;
 }
+/* RESULTADOS DAS CALCULADORAS */
+
+#resultadoIMC:not(:empty),
+#resultadoTMB:not(:empty),
+#resultadoTDEE:not(:empty),
+#resultadoMacros:not(:empty),
+#resultado1RM:not(:empty),
+#resultadoGordura:not(:empty) {
+  background: linear-gradient(145deg, #202020, #101010);
+  border: 1px solid #b6ff00;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 18px 0;
+  color: #b6ff00;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.8;
+  box-shadow: 0 0 12px #b6ff0020;
+}
+
+#resultadoIMC,
+#resultadoTMB,
+#resultadoTDEE,
+#resultadoMacros,
+#resultado1RM,
+#resultadoGordura {
+  font-variant-numeric: tabular-nums;
+}
+/* TITULOS DAS CALCULADORAS */
+
+#calculadoras h3 {
+  color: #b6ff00;
+  font-size: 19px;
+  font-weight: bold;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+/* SEPARADORES */
+
+#calculadoras hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #b6ff00, transparent);
+  margin: 28px 0;
+}
+
+/* CAMPOS DAS CALCULADORAS */
+
+#calculadoras input,
+#calculadoras select {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background: #191919;
+  color: white;
+  font-size: 16px;
+}
+/* BOTOES DAS CALCULADORAS */
+
+#calculadoras button {
+  width: 100%;
+  padding: 16px;
+  margin: 10px 0;
+  border: 1px solid #b6ff00;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #b6ff00, #83bd00);
+  color: #080808;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px #b6ff0025;
+}
+
+#calculadoras button:active {
+  transform: scale(0.98);
+}
 </style>
 </head>
 <body>
