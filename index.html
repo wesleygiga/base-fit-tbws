@@ -2218,14 +2218,15 @@ function irPara(id){
 if(id === 'meuCorpo'){
   carregarResumoCorporal();
 }
-  if(id === 'motivacional'){
-  carregarVideosMotivacionais();
-  if(id === 'dieta'){
-    atualizarTelaDieta();
-  
+     if(id === 'motivacional'){
+      carregarVideosMotivacionais();
+      if(id === 'dieta'){
+        atualizarTelaDieta();
+      }
+    }
+  }
 }
-}
-}
+
 function voltarInicio(){
   irPara('telaInicial');
 }
