@@ -2435,7 +2435,65 @@ function fecharMedidaCorporal() {
   document.getElementById('formMedidaCorporal').style.display = 'none';
   regiaoMedidaSelecionada = '';
 }
+async function salvarMedidaCorporal() {
+  const valor = parseFloat(
+    document.getElementById('valorMedidaCorporal').value
+  );
 
+  if (!regiaoMedidaSelecionada) {
+    alert('Selecione uma região do corpo.');
+    return;
+  }
+
+  if (!valor || valor <= 0) {
+    alert('Digite uma medida válida.');
+    return;
+  }
+
+  const { data: { user }, error: erroUsuario } =
+    await db.auth.getUser();
+
+  if (erroUsuario || !user) {
+    alert('Faça login novamente.');
+    return;
+  }
+
+  const { error } = await db
+    .from('medidas_corpo')
+    .insert({
+      usuario_id: user.id,
+      regiao: regiaoMedidaSelecionada,
+      valor: valor,
+      vista: vistaCorpoAtual
+    });
+
+  if (error) {
+    alert('Erro ao salvar medida: ' + error.message);
+    return;
+  }
+
+  alert('Medida salva com sucesso!');
+  fecharMedidaCorporal();
+}
+
+async function carregarMedidasCorporais() {
+  const { data: { user } } = await db.auth.getUser();
+
+  if (!user) return;
+
+  const { data, error } = await db
+    .from('medidas_corpo')
+    .select('*')
+    .eq('usuario_id', user.id)
+    .order('criado_em', { ascending: false });
+
+  if (error) {
+    console.error('Erro ao carregar medidas:', error);
+    return;
+  }
+
+  console.log('Medidas corporais:', data);
+}
 desenharSilhueta();
 
 </script>
