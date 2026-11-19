@@ -585,7 +585,20 @@ border:none;
   padding: 15px;
   margin-top: 15px;
 }
+.blocoIndicador{
+  flex:1;
+  padding:12px 0;
+  border-radius:8px;
+  background:#303830;
+  color:white;
+  font-weight:bold;
+  transition:0.2s;
+}
 
+.blocoIndicador.ativo{
+  background:#B5F52A;
+  color:#101510;
+}
 </style>
 </head>
 <body>
@@ -766,6 +779,49 @@ border:none;
   <button onclick="iniciar()">INICIAR</button>
   <button onclick="pausar()">PAUSAR</button>
   <button onclick="zerar()">ZERAR</button>
+</div>
+<div id="contadorBlocos" style="
+  background:#101510;
+  border-radius:18px;
+  padding:18px;
+  margin-top:20px;
+  text-align:center;
+  color:white;
+">
+
+  <h3 style="color:#B5F52A;">
+    🔥 CONTADOR DE BLOCOS
+  </h3>
+
+  <h2 id="quantidadeBlocos" style="font-size:36px;">
+    0 / 6
+  </h2>
+
+  <p style="color:#C4C9BE;">
+    BLOCOS CONCLUÍDOS
+  </p>
+
+  <div id="indicadoresBlocos" style="
+    display:flex;
+    gap:8px;
+    margin:15px 0;
+  ">
+    <div class="blocoIndicador">1</div>
+    <div class="blocoIndicador">2</div>
+    <div class="blocoIndicador">3</div>
+    <div class="blocoIndicador">4</div>
+    <div class="blocoIndicador">5</div>
+    <div class="blocoIndicador">6</div>
+  </div>
+
+  <button onclick="adicionarBloco()">
+    +1 BLOCO
+  </button>
+
+  <button onclick="zerarBlocos()">
+    ZERAR BLOCOS
+  </button>
+
 </div>
 </div>
 
@@ -1635,6 +1691,44 @@ function iniciar(){
   inicioCronometro = performance.now();
   intervalo = setInterval(atualizar, 10);
   atualizar();
+}
+let blocosConcluidos = 0;
+
+function adicionarBloco(){
+
+  if(blocosConcluidos >= 6){
+    alert('Você completou os 6 blocos!');
+    return;
+  }
+
+  blocosConcluidos++;
+
+  atualizarContadorBlocos();
+}
+
+function zerarBlocos(){
+
+  blocosConcluidos = 0;
+
+  atualizarContadorBlocos();
+}
+
+function atualizarContadorBlocos(){
+
+  document.getElementById('quantidadeBlocos').textContent =
+    blocosConcluidos + ' / 6';
+
+  const indicadores = document.querySelectorAll('.blocoIndicador');
+
+  indicadores.forEach((bloco, indice) => {
+
+    if(indice < blocosConcluidos){
+      bloco.classList.add('ativo');
+    }else{
+      bloco.classList.remove('ativo');
+    }
+
+  });
 }
 
 function pausar(){
