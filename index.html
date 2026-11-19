@@ -1778,6 +1778,15 @@ function calcularIMC(){
 
   document.getElementById('resultadoIMC').textContent =
     'Seu IMC: ' + imc.toFixed(1) + ' | ' + classificacao;
+
+  localStorage.setItem('basefitPesoAtual', peso);
+  localStorage.setItem('basefitIMC', imc.toFixed(1));
+document.getElementById('pesoCorpoAtual').textContent =
+  peso.toFixed(1) + ' kg';
+
+document.getElementById('imcCorpoAtual').textContent =
+  imc.toFixed(1);
+
 }
 function calcularTMB(){
 
@@ -1904,6 +1913,10 @@ function calcularGordura(){
 
   document.getElementById('resultadoGordura').textContent =
     'Gordura corporal estimada: ' + gordura.toFixed(1) + '%';
+localStorage.setItem('basefitGorduraAtual', gordura.toFixed(1));
+
+document.getElementById('gorduraCorpoAtual').textContent =
+  gordura.toFixed(1) + '%';
 }
 function irPara(id){
   const telas = [
@@ -1927,7 +1940,9 @@ function irPara(id){
 
   if(destino){
   destino.style.display = 'block';
-
+if(id === 'meuCorpo'){
+  carregarResumoCorporal();
+}
   if(id === 'motivacional'){
   carregarVideosMotivacionais();
 }
