@@ -485,6 +485,107 @@ border:none;
   margin: -8px 0 18px;
   text-align: left;
 }
+
+/* MEU CORPO - BASE FIT TBWS */
+
+.corpo-resumo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.corpo-indicador {
+  background: #171717;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: left;
+}
+
+.corpo-indicador span {
+  display: block;
+  color: #aaa;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.corpo-indicador strong {
+  color: #b7ff00;
+  font-size: 22px;
+}
+
+.mapa-corporal {
+  background: #101010;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 15px 8px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.alternar-corpo {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.alternar-corpo button,
+.secoes-corpo button {
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 9px;
+  padding: 12px 18px;
+  font-weight: bold;
+}
+
+.alternar-corpo button.ativo {
+  background: #b7ff00;
+  color: black;
+}
+
+#silhuetaCorporal {
+  width: 100%;
+  min-height: 440px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mapa-corporal > p {
+  color: #aaa;
+  font-size: 13px;
+}
+
+#formMedidaCorporal {
+  background: #171717;
+  border: 1px solid #b7ff00;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 20px 0;
+}
+
+.secoes-corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.secoes-corpo button {
+  color: #b7ff00;
+  border-color: #b7ff00;
+}
+
+#conteudoSecaoCorpo {
+  background: #171717;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
 </style>
 </head>
 <body>
@@ -673,7 +774,103 @@ border:none;
 <h2>Dieta</h2>
 <p>Controle sua alimentação.</p>
 </div>
-<div class="card tela-app" id="meuCorpo" style="display:none;"><button onclick="voltarInicio()">← INÍCIO</button><h2>Meu Corpo</h2><p>Acompanhe suas medidas e evolução.</p></div>
+
+<div class="card tela-app" id="meuCorpo" style="display:none;">
+
+  <button onclick="voltarInicio()">← INÍCIO</button>
+
+  <h2>MEU CORPO</h2>
+  <p>Acompanhe sua evolução física.</p>
+
+  <div class="corpo-resumo">
+
+    <div class="corpo-indicador">
+      <span>PESO ATUAL</span>
+      <strong id="pesoCorpoAtual">-- kg</strong>
+    </div>
+
+    <div class="corpo-indicador">
+      <span>IMC</span>
+      <strong id="imcCorpoAtual">--</strong>
+    </div>
+
+    <div class="corpo-indicador">
+      <span>GORDURA CORPORAL</span>
+      <strong id="gorduraCorpoAtual">--%</strong>
+    </div>
+
+    <div class="corpo-indicador">
+      <span>MASSA MUSCULAR</span>
+      <strong id="musculoCorpoAtual">-- kg</strong>
+    </div>
+
+  </div>
+
+  <div class="mapa-corporal">
+
+    <div class="alternar-corpo">
+      <button id="btnFrente" class="ativo"
+        onclick="alternarVistaCorpo('frente')">
+        FRENTE
+      </button>
+
+      <button id="btnCostas"
+        onclick="alternarVistaCorpo('costas')">
+        COSTAS
+      </button>
+    </div>
+
+    <div id="silhuetaCorporal">
+      <!-- SILHUETA SERÁ INSERIDA AQUI -->
+    </div>
+
+    <p>Toque em uma região para registrar sua medida.</p>
+
+  </div>
+
+  <div id="formMedidaCorporal" style="display:none;">
+
+    <h3 id="tituloMedidaCorporal">REGISTRAR MEDIDA</h3>
+
+    <label>Medida em centímetros:</label>
+
+    <input type="number" id="valorMedidaCorporal"
+      placeholder="Ex: 40" step="0.1">
+
+    <button onclick="salvarMedidaCorporal()">
+      SALVAR MEDIDA
+    </button>
+
+    <button onclick="fecharMedidaCorporal()">
+      CANCELAR
+    </button>
+
+  </div>
+
+  <div class="secoes-corpo">
+
+    <button onclick="abrirSecaoCorpo('evolucao')">
+      EVOLUÇÃO
+    </button>
+
+    <button onclick="abrirSecaoCorpo('medidas')">
+      MEDIDAS
+    </button>
+
+    <button onclick="abrirSecaoCorpo('composicao')">
+      COMPOSIÇÃO
+    </button>
+
+    <button onclick="abrirSecaoCorpo('informacoes')">
+      INFORMAÇÕES
+    </button>
+
+  </div>
+
+  <div id="conteudoSecaoCorpo"></div>
+
+</div>
+
 <div class="card tela-app" id="calculadoras" style="display:none;">
 
   <button onclick="voltarInicio()">← INÍCIO</button>
