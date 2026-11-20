@@ -3499,5 +3499,14 @@ if (secao === 'evolucao') {
 desenharSilhueta();
 
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(() => console.log('BASE FIT: Service Worker ativo'))
+      .catch(error => console.error('Erro no Service Worker:', error));
+  });
+}
+</script>
 </body>
 </html>
