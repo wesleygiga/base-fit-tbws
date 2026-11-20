@@ -2762,6 +2762,53 @@ atualizarProgressoMetas(totais);
     registros.length + ' alimento(s) registrado(s).';
 mostrarHistoricoDieta();
 }
+let temporizadorToast;
+
+function mostrarToast(mensagem) {
+  let toast = document.getElementById('baseFitToast');
+
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'baseFitToast';
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = mensagem;
+
+  Object.assign(toast.style, {
+    position: 'fixed',
+    bottom: '25px',
+    left: '50%',
+    transform: 'translateX(-50%) translateY(15px)',
+    background: '#191919',
+    color: '#ffffff',
+    border: '1px solid #b7ff00',
+    borderRadius: '12px',
+    padding: '14px 20px',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    width: 'max-content',
+    maxWidth: 'calc(100% - 32px)',
+    boxShadow: '0 5px 20px rgba(0,0,0,0.5)',
+    zIndex: '99999',
+    opacity: '0',
+    transition: 'opacity 0.25s ease, transform 0.25s ease',
+    pointerEvents: 'none'
+  });
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+  });
+
+  clearTimeout(temporizadorToast);
+
+  temporizadorToast = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(15px)';
+  }, 2500);
+}
 function irPara(id){
   const telas = [
     'telaInicial',
