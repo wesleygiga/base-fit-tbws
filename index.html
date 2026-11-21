@@ -2907,6 +2907,7 @@ function gerarPlanoAlimentar(){
   }
 
   
+  
   function calcularTotais(quantidades){
 
     return quantidades.reduce((total, gramas, i) => {
@@ -2930,70 +2931,115 @@ function gerarPlanoAlimentar(){
 
   }
 
-  function avaliarPlano(totais){
+  const metas = [
+    caloriasMeta,
+    proteinasMeta,
+    carboidratosMeta,
+    gordurasMeta
+  ];
 
-    return (
-      Math.pow((totais.calorias - caloriasMeta) / caloriasMeta, 2) +
-      1.5 * Math.pow((totais.proteinas - proteinasMeta) / proteinasMeta, 2) +
-      Math.pow((totais.carboidratos - carboidratosMeta) / carboidratosMeta, 2) +
-      Math.pow((totais.gorduras - gordurasMeta) / gordurasMeta, 2)
-    );
+  const quantidades = alimentosSelecionados.map(() => 10);
+
+  // OTIMIZAÇÃO MATEMÁTICA DAS QUANTIDADES
+
+  for(let tentativa = 0; tentativa < 3000; tentativa++){
+
+    let maiorAlteracao = 0;
+
+    for(let i = 0; i < alimentosSelecionados.length; i++){
+
+      const totaisAtuais = calcularTotais(quantidades);
+      const alimento = alimentosSelecionados[i];
+
+      const coeficientes = [
+        alimento.calorias / 100,
+        alimento.proteinas / 100,
+        alimento.carboidratos / 100,
+        alimento.gorduras / 100
+      ];
+
+      const valoresAtuais = [
+        totaisAtuais.calorias,
+        totaisAtuais.proteinas,
+        totaisAtuais.carboidratos,
+        totaisAtuais.gorduras
+      ];
+
+      let numerador = 0;
+      let denominador = 0;
+
+      for(let j = 0; j < 4; j++){
+
+        const coeficiente = coeficientes[j];
+        const meta = metas[j];
+
+        numerador +=
+          coeficiente *
+          (meta - valoresAtuais[j] + coeficiente * quantidades[i]) /
+          (meta * meta);
+
+        denominador +=
+          (coeficiente * coeficiente) /
+          (meta * meta);
+
+      }
+
+      if(denominador > 0){
+
+        const novaQuantidade = Math.max(
+          10,
+          numerador / denominador
+        );
+
+        maiorAlteracao = Math.max(
+          maiorAlteracao,
+          Math.abs(novaQuantidade - quantidades[i])
+        );
+
+        quantidades[i] = novaQuantidade;
+
+      }
+
+    }
+
+    if(maiorAlteracao < 0.001) break;
 
   }
 
-  let quantidades = alimentosSelecionados.map(() => 50);
-
-  const etapas = [100, 50, 20, 10, 5, 1];
-
-  etapas.forEach(passo => {
-
-    alimentosSelecionados.forEach((alimento, i) => {
-
-      let melhorQuantidade = quantidades[i];
-      let melhorPontuacao = avaliarPlano(
-        calcularTotais(quantidades)
-      );
-
-      [-passo, passo].forEach(variacao => {
-
-        const tentativa = Math.max(
-          10,
-          Math.min(2000, quantidades[i] + variacao)
-        );
-
-        const teste = [...quantidades];
-        teste[i] = tentativa;
-
-        const pontuacao = avaliarPlano(
-          calcularTotais(teste)
-        );
-
-        if(pontuacao < melhorPontuacao){
-          melhorPontuacao = pontuacao;
-          melhorQuantidade = tentativa;
-        }
-
-      });
-
-      quantidades[i] = melhorQuantidade;
-
-    });
-
-  });
-
   const totais = calcularTotais(quantidades);
+
+  function mostrarMeta(nome, valor, meta, unidade){
+
+    const diferenca = valor - meta;
+    const sinal = diferenca > 0 ? '+' : '';
+
+    return `
+      <p>
+        ${nome}: <strong>${valor.toFixed(1)} ${unidade}</strong>
+        / ${meta} ${unidade}
+        <br>
+        <small>Diferença: ${sinal}${diferenca.toFixed(1)} ${unidade}</small>
+      </p>
+    `;
+
+  }
 
   let resultado = `
     <h3>📋 SEU PLANO ALIMENTAR</h3>
 
-    <h4>🎯 RESULTADO NUTRICIONAL</h4>
+    <h4>🎯 RESULTADO NUTRICIONAL DIÁRIO</h4>
 
-    <p>Calorias: ${Math.round(totais.calorias)} / ${caloriasMeta} kcal</p>
-    <p>Proteínas: ${totais.proteinas.toFixed(1)} / ${proteinasMeta} g</p>
-    <p>Carboidratos: ${totais.carboidratos.toFixed(1)} / ${carboidratosMeta} g</p>
-    <p>Gorduras: ${totais.gorduras.toFixed(1)} / ${gordurasMeta} g</p>
+    ${mostrarMeta('Calorias', totais.calorias, caloriasMeta, 'kcal')}
+
+    ${mostrarMeta('Proteínas', totais.proteinas, proteinasMeta, 'g')}
+
+    ${mostrarMeta('Carboidratos', totais.carboidratos, carboidratosMeta, 'g')}
+
+    ${mostrarMeta('Gorduras', totais.gorduras, gordurasMeta, 'g')}
 
     <hr>
+
+    <h4>🍽️ DISTRIBUIÇÃO DAS REFEIÇÕES</h4>
   `;
 
   for(let refeicao = 1; refeicao <= quantidadeRefeicoes; refeicao++){
@@ -3020,9 +3066,6 @@ function gerarPlanoAlimentar(){
   }
 
   document.getElementById('resultadoPlanoAlimentar').innerHTML = resultado;
-
-
-}
 
 
 function carregarAlimentosPlano(){
