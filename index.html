@@ -2831,6 +2831,29 @@ function abrirAbaDieta(aba){
 
   btnMontar.style.color =
     aba === 'montar' ? '#000000' : '#b7ff00';
+  if(aba === 'montar'){
+    atualizarMetasPlano();
+  }
+}
+
+function atualizarMetasPlano(){
+
+  const calorias = Number(localStorage.getItem('basefitMetaCalorias') || 0);
+  const proteinas = Number(localStorage.getItem('basefitMetaProteinas') || 0);
+  const carboidratos = Number(localStorage.getItem('basefitMetaCarboidratos') || 0);
+  const gorduras = Number(localStorage.getItem('basefitMetaGorduras') || 0);
+
+  document.getElementById('metaPlanoCalorias').textContent =
+    calorias > 0 ? calorias + ' kcal' : 'Não definida';
+
+  document.getElementById('metaPlanoProteinas').textContent =
+    proteinas > 0 ? proteinas + ' g' : 'Não definida';
+
+  document.getElementById('metaPlanoCarboidratos').textContent =
+    carboidratos > 0 ? carboidratos + ' g' : 'Não definida';
+
+  document.getElementById('metaPlanoGorduras').textContent =
+    gorduras > 0 ? gorduras + ' g' : 'Não definida';
 
 }
 
