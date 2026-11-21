@@ -839,6 +839,63 @@ border:none;
 
 <hr>
 
+<h3>🍽️ MONTE MINHA DIETA</h3>
+
+<p>Monte um plano alimentar usando suas metas nutricionais.</p>
+
+<div id="areaMonteMinhaDieta">
+
+  <h4>🎯 SUAS METAS DIÁRIAS</h4>
+
+  <div id="metasPlanoAlimentar">
+    <p>Calorias: <strong id="metaPlanoCalorias">0 kcal</strong></p>
+    <p>Proteínas: <strong id="metaPlanoProteinas">0 g</strong></p>
+    <p>Carboidratos: <strong id="metaPlanoCarboidratos">0 g</strong></p>
+    <p>Gorduras: <strong id="metaPlanoGorduras">0 g</strong></p>
+  </div>
+
+  <hr>
+
+  <h4>🥗 ESCOLHA SEUS ALIMENTOS</h4>
+
+  <input
+    type="text"
+    id="buscarAlimentoPlano"
+    placeholder="Buscar alimento..."
+  >
+
+  <div id="listaAlimentosPlano"></div>
+
+  <hr>
+
+  <h4>🍽️ QUANTIDADE DE REFEIÇÕES</h4>
+
+  <select id="quantidadeRefeicoesPlano">
+    <option value="1">1 refeição</option>
+    <option value="2">2 refeições</option>
+    <option value="3">3 refeições</option>
+    <option value="4" selected>4 refeições</option>
+    <option value="5">5 refeições</option>
+    <option value="6">6 refeições</option>
+  </select>
+
+  <button onclick="gerarPlanoAlimentar()">
+    ⚡ GERAR PLANO ALIMENTAR
+  </button>
+
+  <div id="resultadoPlanoAlimentar"></div>
+
+  <hr>
+
+  <h4>📋 MEUS PLANOS SALVOS</h4>
+
+  <div id="listaPlanosSalvos"></div>
+
+</div>
+
+<hr>
+
+
 <h3>📊 RESUMO DIÁRIO</h3>
 
 <div class="corpo-resumo">
