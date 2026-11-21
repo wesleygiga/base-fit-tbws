@@ -2891,7 +2891,10 @@ window.entrar = async function(){
 
   msg.textContent='Entrando...';
 
-  const {error}=await db.auth.signInWithPassword({
+  
+msg.textContent='Entrando...';
+
+  const {data,error}=await db.auth.signInWithPassword({
     email:email,
     password:senha
   });
@@ -2899,8 +2902,10 @@ window.entrar = async function(){
   if(error){
     msg.textContent='Erro: '+error.message;
   }else{
+    usuarioAtualId = data.user.id;
     mostrarApp();
   }
+
 }
 document.querySelector('button[onclick="criarConta()"]').addEventListener('click', function(){
   document.getElementById('nomeCadastro').style.display='block';
