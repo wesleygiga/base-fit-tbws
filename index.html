@@ -2870,14 +2870,27 @@ function atualizarMetasPlano(){
 
 }
 
+
 function carregarAlimentosPlano(){
 
   const lista = document.getElementById('listaAlimentosPlano');
   const busca = document.getElementById('buscarAlimentoPlano');
+  const contador = document.getElementById('contadorAlimentosPlano');
 
-  if(!lista || !busca) return;
+  if(!lista || !busca || !contador) return;
 
   const selecionados = new Set();
+
+  function atualizarContadorPlano(){
+
+    const quantidade = selecionados.size;
+
+    contador.textContent =
+      quantidade + (quantidade === 1
+        ? ' alimento selecionado'
+        : ' alimentos selecionados');
+
+  }
 
   function mostrarAlimentos(filtro = ''){
 
@@ -2898,11 +2911,15 @@ function carregarAlimentosPlano(){
       checkbox.checked = selecionados.has(alimento.nome);
 
       checkbox.addEventListener('change', () => {
+
         if(checkbox.checked){
           selecionados.add(alimento.nome);
         }else{
           selecionados.delete(alimento.nome);
         }
+
+        atualizarContadorPlano();
+
       });
 
       label.appendChild(checkbox);
@@ -2921,6 +2938,7 @@ function carregarAlimentosPlano(){
   });
 
   mostrarAlimentos();
+  atualizarContadorPlano();
 
 }
 
