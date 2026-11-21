@@ -2831,9 +2831,12 @@ function abrirAbaDieta(aba){
 
   btnMontar.style.color =
     aba === 'montar' ? '#000000' : '#b7ff00';
-  if(aba === 'montar'){
+  
+if(aba === 'montar'){
     atualizarMetasPlano();
-  }
+    carregarAlimentosPlano();
+}
+
 }
 
 function atualizarMetasPlano(){
@@ -2854,6 +2857,60 @@ function atualizarMetasPlano(){
 
   document.getElementById('metaPlanoGorduras').textContent =
     gorduras > 0 ? gorduras + ' g' : 'Não definida';
+
+}
+
+function carregarAlimentosPlano(){
+
+  const lista = document.getElementById('listaAlimentosPlano');
+  const busca = document.getElementById('buscarAlimentoPlano');
+
+  if(!lista || !busca) return;
+
+  const selecionados = new Set();
+
+  function mostrarAlimentos(filtro = ''){
+
+    const alimentos = bancoNutricionalTACO.filter(item =>
+      item.nome.toLowerCase().includes(filtro.toLowerCase())
+    );
+
+    lista.innerHTML = '';
+
+    alimentos.forEach(alimento => {
+
+      const label = document.createElement('label');
+      label.style.display = 'block';
+      label.style.margin = '10px 0';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = selecionados.has(alimento.nome);
+
+      checkbox.addEventListener('change', () => {
+        if(checkbox.checked){
+          selecionados.add(alimento.nome);
+        }else{
+          selecionados.delete(alimento.nome);
+        }
+      });
+
+      label.appendChild(checkbox);
+      label.appendChild(
+        document.createTextNode(' ' + alimento.nome)
+      );
+
+      lista.appendChild(label);
+
+    });
+
+  }
+
+  busca.addEventListener('input', () => {
+    mostrarAlimentos(busca.value);
+  });
+
+  mostrarAlimentos();
 
 }
 
