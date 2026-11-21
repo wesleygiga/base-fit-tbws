@@ -837,9 +837,25 @@ border:none;
 <h2>🥗 MINHA DIETA</h2>
 <p>Controle sua alimentação e acompanhe seus resultados.</p>
 
+
 <hr>
 
+<div class="abas-dieta">
+
+  <button onclick="abrirAbaDieta('alimentacao')">
+    🥗 MINHA ALIMENTAÇÃO
+  </button>
+
+  <button onclick="abrirAbaDieta('montar')">
+    🍽️ MONTE MINHA DIETA
+  </button>
+
+</div>
+
+<div id="abaMonteMinhaDieta" style="display:none;">
+
 <h3>🍽️ MONTE MINHA DIETA</h3>
+
 
 <p>Monte um plano alimentar usando suas metas nutricionais.</p>
 
@@ -894,7 +910,7 @@ border:none;
 </div>
 
 <hr>
-
+<div id="abaAlimentacao">
 
 <h3>📊 RESUMO DIÁRIO</h3>
 
@@ -1006,6 +1022,8 @@ border:none;
 <h3>🎯 METAS NUTRICIONAIS</h3>
 
 <div id="areaMetasDieta"></div>
+ 
+</div>
 
 </div>
 
@@ -2751,6 +2769,22 @@ function mostrarHistoricoDieta(){
     });
   });
 }
+
+function abrirAbaDieta(aba){
+
+  const alimentacao = document.getElementById('abaAlimentacao');
+  const montar = document.getElementById('abaMonteMinhaDieta');
+
+  if(!alimentacao || !montar) return;
+
+  alimentacao.style.display =
+    aba === 'alimentacao' ? 'block' : 'none';
+
+  montar.style.display =
+    aba === 'montar' ? 'block' : 'none';
+
+}
+
 function atualizarTelaDieta(){
 
   const registros = JSON.parse(
