@@ -840,17 +840,45 @@ border:none;
 
 <hr>
 
-<div class="abas-dieta">
 
-  <button onclick="abrirAbaDieta('alimentacao')">
+<div class="abas-dieta" style="
+  display:flex;
+  gap:10px;
+  margin:20px 0;
+">
+
+  <button id="btnAbaAlimentacao"
+    onclick="abrirAbaDieta('alimentacao')"
+    style="
+      flex:1;
+      padding:15px 8px;
+      border:1px solid #b7ff00;
+      border-radius:12px;
+      background:#b7ff00;
+      color:#000;
+      font-weight:bold;
+      font-size:12px;
+    ">
     🥗 MINHA ALIMENTAÇÃO
   </button>
 
-  <button onclick="abrirAbaDieta('montar')">
+  <button id="btnAbaMontar"
+    onclick="abrirAbaDieta('montar')"
+    style="
+      flex:1;
+      padding:15px 8px;
+      border:1px solid #b7ff00;
+      border-radius:12px;
+      background:#171717;
+      color:#b7ff00;
+      font-weight:bold;
+      font-size:12px;
+    ">
     🍽️ MONTE MINHA DIETA
   </button>
 
 </div>
+
 
 <div id="abaMonteMinhaDieta" style="display:none;">
 
