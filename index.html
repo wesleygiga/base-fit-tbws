@@ -188,8 +188,35 @@ border:none;
   justify-content: center;
   padding: 20px;
   border: 5px solid var(--cor);
+  overflow: hidden;
+  isolation: isolate;
+}
+#telaLogin::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: -1;
+  opacity: 0.8;
+  background:
+    linear-gradient(115deg, transparent 45%, #b7ff00 45.2%, transparent 45.6%),
+    linear-gradient(65deg, transparent 52%, #b7ff00 52.2%, transparent 52.5%),
+    linear-gradient(145deg, transparent 35%, #65a900 35.2%, transparent 35.5%),
+    linear-gradient(25deg, transparent 62%, #b7ff00 62.2%, transparent 62.5%);
+  background-size: 100% 100%;
+  animation: linhasVerdes 8s linear infinite;
 }
 
+@keyframes linhasVerdes {
+  0% {
+    transform: translate(-3%, -2%) rotate(0deg);
+  }
+  50% {
+    transform: translate(3%, 2%) rotate(5deg);
+  }
+  100% {
+    transform: translate(-3%, -2%) rotate(0deg);
+  }
+}
 .login-card {
   width: 100%;
   max-width: 400px;
@@ -198,6 +225,8 @@ border:none;
   border-radius: 18px;
   padding: 28px 20px;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .login-card h1 {
