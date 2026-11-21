@@ -226,6 +226,49 @@ border:none;
 
 
 }
+
+.ondas-login {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ondas-login .trilhas path {
+  fill: none;
+  stroke: #8cff00;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.65;
+  filter: drop-shadow(0 0 5px #8cff00);
+  stroke-dasharray: 80 500;
+  animation: pulsoLinhas 5s linear infinite;
+}
+
+.ondas-login .trilhas path:nth-child(2) {
+  animation-delay: -1.2s;
+}
+
+.ondas-login .trilhas path:nth-child(3) {
+  animation-delay: -2.4s;
+}
+
+.ondas-login .trilhas path:nth-child(4) {
+  animation-delay: -3.6s;
+}
+
+@keyframes pulsoLinhas {
+  from {
+    stroke-dashoffset: 580;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 .login-card {
   width: 100%;
   max-width: 400px;
@@ -645,8 +688,26 @@ border:none;
 </style>
 </head>
 <body>
+
 <div id="telaLogin">
+
+  <svg class="ondas-login" viewBox="0 0 400 800" preserveAspectRatio="none">
+    <defs>
+      <filter id="brilhoOnda">
+        <feGaussianBlur stdDeviation="4"/>
+      </filter>
+    </defs>
+
+    <g class="trilhas">
+      <path d="M-40 180 C80 40 100 350 210 250 S330 80 450 220"/>
+      <path d="M-50 430 C70 280 130 570 230 440 S350 300 450 470"/>
+      <path d="M-40 690 C70 540 140 820 250 670 S360 550 450 720"/>
+      <path d="M-30 80 C100 220 140 -40 250 100 S350 230 440 60"/>
+    </g>
+  </svg>
+
   <div class="login-card">
+
     <h1>BASE FIT <span>TBWS</span></h1>
     <p>TRAIN • TRACK • EVOLVE</p>
 
