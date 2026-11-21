@@ -2986,9 +2986,12 @@ function gerarPlanoAlimentar(){
 
       if(denominador > 0){
 
-        const novaQuantidade = Math.max(
-  50,
-  numerador / denominador
+       const novaQuantidade = Math.max(
+  50 * quantidadeRefeicoes,
+  Math.min(
+    500 * quantidadeRefeicoes,
+    numerador / denominador
+  )
 );
 
         maiorAlteracao = Math.max(
