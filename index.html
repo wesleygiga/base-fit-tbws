@@ -2310,9 +2310,9 @@ const bancoNutricionalTACO = [
   {nome:'Sardinha assada',calorias:164,proteinas:32,carboidratos:0,gorduras:3},
   {nome:'Atum em água drenado',calorias:116,proteinas:25.5,carboidratos:0,gorduras:0.8},
 
-  // OVOS E LATICÍNIOS
-  {nome:'Ovo cozido',calorias:146,proteinas:13.3,carboidratos:0.6,gorduras:9.5},
-  {nome:'Ovo frito',calorias:240,proteinas:15.6,carboidratos:1.2,gorduras:18},
+ // OVOS E LATICÍNIOS
+{nome:'Ovo cozido',calorias:146,proteinas:13.3,carboidratos:0.6,gorduras:9.5,gramasUnidade:50,unidade:'unidade'},
+{nome:'Ovo frito',calorias:240,proteinas:15.6,carboidratos:1.2,gorduras:18,gramasUnidade:50,unidade:'unidade'},
   {nome:'Leite integral',calorias:61,proteinas:3.2,carboidratos:4.7,gorduras:3.3},
   {nome:'Leite desnatado',calorias:35,proteinas:3.4,carboidratos:5,gorduras:0.1},
   {nome:'Iogurte natural integral',calorias:51,proteinas:4.1,carboidratos:1.9,gorduras:3},
@@ -3053,7 +3053,11 @@ function gerarPlanoAlimentar(){
 
     alimentosSelecionados.forEach((alimento, i) => {
 
-      const gramas = quantidades[i] / quantidadeRefeicoes;
+     const gramas = quantidades[i] / quantidadeRefeicoes;
+
+const quantidadeExibida = alimento.gramasUnidade
+  ? (gramas / alimento.gramasUnidade).toFixed(1) + ' ' + alimento.unidade
+ ${quantidadeExibida}
 
       resultado += `
         <p>
