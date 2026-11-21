@@ -1357,6 +1357,7 @@ const db = window.supabase.createClient(
   }
 );
 let usuarioAtualId = null;
+let alimentosSelecionadosPlano = new Set();
 let tmbAtual = null;
 let tempoAcumulado=0, inicioCronometro=null, intervalo=null, imagem=null;
 let imagemData = '';
