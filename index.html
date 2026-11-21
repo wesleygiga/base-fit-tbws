@@ -2871,6 +2871,159 @@ function atualizarMetasPlano(){
 
 }
 
+function gerarPlanoAlimentar(){
+
+  const caloriasMeta = Number(localStorage.getItem('basefitMetaCalorias') || 0);
+  const proteinasMeta = Number(localStorage.getItem('basefitMetaProteinas') || 0);
+  const carboidratosMeta = Number(localStorage.getItem('basefitMetaCarboidratos') || 0);
+  const gordurasMeta = Number(localStorage.getItem('basefitMetaGorduras') || 0);
+
+  const quantidadeRefeicoes = Number(
+    document.getElementById('quantidadeRefeicoesPlano').value
+  );
+
+  if(!caloriasMeta || !proteinasMeta || !carboidratosMeta || !gordurasMeta){
+    alert('Defina suas metas nutricionais antes de gerar o plano.');
+    return;
+  }
+
+  if(alimentosSelecionadosPlano.size === 0){
+    alert('Selecione pelo menos um alimento.');
+    return;
+  }
+
+  if(quantidadeRefeicoes < 1 || quantidadeRefeicoes > 6){
+    alert('Selecione de 1 a 6 refeições.');
+    return;
+  }
+
+  const alimentosSelecionados = bancoNutricionalTACO.filter(alimento =>
+    alimentosSelecionadosPlano.has(alimento.nome)
+  );
+
+  if(alimentosSelecionados.length === 0){
+    alert('Nenhum alimento válido foi encontrado.');
+    return;
+  }
+
+  
+  function calcularTotais(quantidades){
+
+    return quantidades.reduce((total, gramas, i) => {
+
+      const alimento = alimentosSelecionados[i];
+      const fator = gramas / 100;
+
+      total.calorias += alimento.calorias * fator;
+      total.proteinas += alimento.proteinas * fator;
+      total.carboidratos += alimento.carboidratos * fator;
+      total.gorduras += alimento.gorduras * fator;
+
+      return total;
+
+    }, {
+      calorias: 0,
+      proteinas: 0,
+      carboidratos: 0,
+      gorduras: 0
+    });
+
+  }
+
+  function avaliarPlano(totais){
+
+    return (
+      Math.pow((totais.calorias - caloriasMeta) / caloriasMeta, 2) +
+      1.5 * Math.pow((totais.proteinas - proteinasMeta) / proteinasMeta, 2) +
+      Math.pow((totais.carboidratos - carboidratosMeta) / carboidratosMeta, 2) +
+      Math.pow((totais.gorduras - gordurasMeta) / gordurasMeta, 2)
+    );
+
+  }
+
+  let quantidades = alimentosSelecionados.map(() => 50);
+
+  const etapas = [100, 50, 20, 10, 5, 1];
+
+  etapas.forEach(passo => {
+
+    alimentosSelecionados.forEach((alimento, i) => {
+
+      let melhorQuantidade = quantidades[i];
+      let melhorPontuacao = avaliarPlano(
+        calcularTotais(quantidades)
+      );
+
+      [-passo, passo].forEach(variacao => {
+
+        const tentativa = Math.max(
+          10,
+          Math.min(2000, quantidades[i] + variacao)
+        );
+
+        const teste = [...quantidades];
+        teste[i] = tentativa;
+
+        const pontuacao = avaliarPlano(
+          calcularTotais(teste)
+        );
+
+        if(pontuacao < melhorPontuacao){
+          melhorPontuacao = pontuacao;
+          melhorQuantidade = tentativa;
+        }
+
+      });
+
+      quantidades[i] = melhorQuantidade;
+
+    });
+
+  });
+
+  const totais = calcularTotais(quantidades);
+
+  let resultado = `
+    <h3>📋 SEU PLANO ALIMENTAR</h3>
+
+    <h4>🎯 RESULTADO NUTRICIONAL</h4>
+
+    <p>Calorias: ${Math.round(totais.calorias)} / ${caloriasMeta} kcal</p>
+    <p>Proteínas: ${totais.proteinas.toFixed(1)} / ${proteinasMeta} g</p>
+    <p>Carboidratos: ${totais.carboidratos.toFixed(1)} / ${carboidratosMeta} g</p>
+    <p>Gorduras: ${totais.gorduras.toFixed(1)} / ${gordurasMeta} g</p>
+
+    <hr>
+  `;
+
+  for(let refeicao = 1; refeicao <= quantidadeRefeicoes; refeicao++){
+
+    resultado += `
+      <h4>🍽️ REFEIÇÃO ${refeicao}</h4>
+    `;
+
+    alimentosSelecionados.forEach((alimento, i) => {
+
+      const gramas = quantidades[i] / quantidadeRefeicoes;
+
+      resultado += `
+        <p>
+          ${alimento.nome}:
+          <strong>${gramas.toFixed(1)} g</strong>
+        </p>
+      `;
+
+    });
+
+    resultado += '<hr>';
+
+  }
+
+  document.getElementById('resultadoPlanoAlimentar').innerHTML = resultado;
+
+
+}
+
 
 function carregarAlimentosPlano(){
 
@@ -2880,7 +3033,7 @@ function carregarAlimentosPlano(){
 
   if(!lista || !busca || !contador) return;
 
-  const selecionados = new Set();
+  const selecionados = alimentosSelecionadosPlano;
 
   function atualizarContadorPlano(){
 
@@ -2934,9 +3087,9 @@ function carregarAlimentosPlano(){
 
   }
 
-  busca.addEventListener('input', () => {
-    mostrarAlimentos(busca.value);
-  });
+  busca.oninput = () => {
+  mostrarAlimentos(busca.value);
+};
 
   mostrarAlimentos();
   atualizarContadorPlano();
