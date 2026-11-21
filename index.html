@@ -3053,16 +3053,16 @@ function gerarPlanoAlimentar(){
 
     alimentosSelecionados.forEach((alimento, i) => {
 
-     const gramas = quantidades[i] / quantidadeRefeicoes;
+         const gramas = quantidades[i] / quantidadeRefeicoes;
 
-const quantidadeExibida = alimento.gramasUnidade
-  ? (gramas / alimento.gramasUnidade).toFixed(1) + ' ' + alimento.unidade
- ${quantidadeExibida}
+      const quantidadeExibida = alimento.gramasUnidade
+        ? (gramas / alimento.gramasUnidade).toFixed(1) + ' ' + alimento.unidade
+        : gramas.toFixed(1) + ' g';
 
       resultado += `
         <p>
           ${alimento.nome}:
-          <strong>${gramas.toFixed(1)} g</strong>
+          <strong>${quantidadeExibida}</strong>
         </p>
       `;
 
