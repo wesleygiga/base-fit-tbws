@@ -192,46 +192,38 @@ border:none;
   isolation: isolate;
 }
 
+
 #telaLogin::before {
   content: "";
   position: absolute;
-  inset: -20%;
+  inset: -30%;
   z-index: -1;
   opacity: 0.9;
   background:
-    radial-gradient(
-      ellipse at 20% 50%,
-      transparent 35%,
-      rgba(183, 255, 0, 0.35) 36%,
-      transparent 38%
-    ),
-    radial-gradient(
-      ellipse at 80% 50%,
-      transparent 40%,
-      rgba(183, 255, 0, 0.25) 41%,
-      transparent 43%
-    ),
-    radial-gradient(
-      ellipse at 50% 50%,
-      transparent 45%,
-      rgba(100, 170, 0, 0.3) 46%,
-      transparent 48%
+    repeating-radial-gradient(
+      ellipse at 50% 100%,
+      transparent 0 45px,
+      rgba(183,255,0,0.0) 46px,
+      rgba(183,255,0,0.8) 48px,
+      rgba(183,255,0,0.0) 51px,
+      transparent 80px
     );
-  background-size: 140% 100%;
-  animation: ondasVerdes 7s ease-in-out infinite alternate;
+  background-size: 100% 180%;
+  filter: drop-shadow(0 0 8px #8cff00);
+  animation: ondasVerdes 5s linear infinite;
 }
 
 @keyframes ondasVerdes {
   0% {
-    transform: translateX(-5%) scaleY(0.9);
-  }
-  50% {
-    transform: translateX(3%) scaleY(1.1);
+    background-position: 0 0;
+    transform: skewY(-8deg) scaleX(1.2);
   }
   100% {
-    transform: translateX(-2%) scaleY(0.95);
+    background-position: 0 180%;
+    transform: skewY(8deg) scaleX(1.2);
   }
 }
+
 
 }
 .login-card {
