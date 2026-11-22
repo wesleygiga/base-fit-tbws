@@ -4207,26 +4207,68 @@ if ('serviceWorker' in navigator) {
       .catch(error => console.error('Erro no Service Worker:', error));
   });
 }
-function enviarMensagemBaseFit(){
+
+async function enviarMensagemBaseFit(){
 
   const campo = document.getElementById('mensagemBaseFit');
   const chat = document.getElementById('chatBaseFit');
+  const botao = campo.parentElement.querySelector('button');
 
   const mensagem = campo.value.trim();
 
   if(!mensagem) return;
 
   const novaMensagem = document.createElement('div');
-
   novaMensagem.className = 'mensagem-usuario';
   novaMensagem.textContent = mensagem;
 
   chat.appendChild(novaMensagem);
 
   campo.value = '';
+  botao.disabled = true;
 
+  const carregando = document.createElement('div');
+  carregando.className = 'mensagem-ai';
+  carregando.textContent = 'Pensando...';
+
+  chat.appendChild(carregando);
   chat.scrollTop = chat.scrollHeight;
+
+  try {
+
+    const { data: sessaoData } = await db.auth.getSession();
+
+    if(!sessaoData.session){
+      throw new Error('Sua sessão expirou. Entre novamente na sua conta.');
+    }
+
+    const { data, error } = await db.functions.invoke(
+      'basefit-ai',
+      {
+        body: { mensagem: mensagem }
+      }
+    );
+
+    if(error) throw error;
+
+    carregando.textContent =
+      data?.resposta || 'Não recebi uma resposta da inteligência artificial.';
+
+  } catch(erro) {
+
+    carregando.textContent =
+      erro.message || 'Não foi possível conectar à BASE FIT AI.';
+
+    console.error('Erro BASE FIT AI:', erro);
+
+  } finally {
+
+    botao.disabled = false;
+    chat.scrollTop = chat.scrollHeight;
+
+  }
 }
+
 </script>
 </body>
 </html>
