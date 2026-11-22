@@ -682,7 +682,11 @@ border:none;
 
   <button onclick="irPara('motivacional')" style="background:linear-gradient(#0006,#000b),url('https://images.unsplash.com/photo-1518611012118-696072aa579a') center/cover;">
     🔥 MOTIVACIONAL
-  </button><button class="btn-config" onclick="irPara('configuracoes')">
+  </button>
+<button onclick="irPara('basefitAI')">
+  🤖 BASE FIT AI
+</button>
+<button class="btn-config" onclick="irPara('configuracoes')">
   ⚙️
 </button>
 
@@ -713,6 +717,30 @@ border:none;
 <button onclick="excluirMinhaConta()" style="background:#cc2222;color:white;">
   🗑️ EXCLUIR MINHA CONTA
 </button>
+
+</div>
+<div class="card tela-app" id="basefitAI" style="display:none;">
+
+  <button onclick="voltarInicio()">← INÍCIO</button>
+
+  <h2>🤖 BASE FIT AI</h2>
+  <p>Sua assistente inteligente.</p>
+
+  <div id="chatBaseFit">
+    <div class="mensagem-ai">
+      Olá! Sou a BASE FIT AI. Como posso ajudar você hoje?
+    </div>
+  </div>
+
+  <div class="campo-chat">
+    <input
+      type="text"
+      id="mensagemBaseFit"
+      placeholder="Digite sua pergunta..."
+    >
+
+    <button onclick="enviarMensagemBaseFit()">ENVIAR</button>
+  </div>
 
 </div>
 
@@ -3278,6 +3306,7 @@ function irPara(id){
 'calculadoras',
     'motivacional',
 'configuracoes',
+'basefitAI',
   ];
 
   telas.forEach(telaId => {
