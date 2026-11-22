@@ -4207,6 +4207,26 @@ if ('serviceWorker' in navigator) {
       .catch(error => console.error('Erro no Service Worker:', error));
   });
 }
+function enviarMensagemBaseFit(){
+
+  const campo = document.getElementById('mensagemBaseFit');
+  const chat = document.getElementById('chatBaseFit');
+
+  const mensagem = campo.value.trim();
+
+  if(!mensagem) return;
+
+  const novaMensagem = document.createElement('div');
+
+  novaMensagem.className = 'mensagem-usuario';
+  novaMensagem.textContent = mensagem;
+
+  chat.appendChild(novaMensagem);
+
+  campo.value = '';
+
+  chat.scrollTop = chat.scrollHeight;
+}
 </script>
 </body>
 </html>
