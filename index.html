@@ -669,6 +669,27 @@ border:none;
   cursor: pointer;
   box-shadow: 0 0 12px rgba(183, 255, 0, 0.25);
 }
+.letra-mascote {
+  position: relative;
+  display: inline-block;
+  z-index: 2;
+}
+.letra-mascote::before {
+  content: "";
+  position: absolute;
+  width: 75px;
+  height: 85px;
+  bottom: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-image: url('robo-mascote.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 10;
+}
 </style>
 </head>
 <body>
@@ -692,8 +713,8 @@ border:none;
   </div>
 </div>
 <header>
-<h1>BASE FIT <span>TBWS</span></h1>
-<p>TRAIN • TRACK • EVOLVE</p>
+  <h1><span class="letra-mascote">B</span>ASE FIT <span>TBWS</span></h1>
+  <p>TRAIN • TRACK • EVOLVE</p>
 </header>
 
 <div class="card" id="telaInicial">
