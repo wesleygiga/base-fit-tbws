@@ -689,7 +689,12 @@ border:none;
 .mascote-robo img {
   width: 100%;
   height: 100%;
-  overflow: visible;
+  object-fit: contain;
+  animation: basefit-flutuar 2.5s ease-in-out infinite;
+}
+@keyframes basefit-flutuar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 
 .mascote-robo .perna {
